@@ -273,84 +273,27 @@ class RecentActivity extends StatelessWidget {
 }
 
 
-class Notifications extends StatefulWidget {
+class Notifications extends StatelessWidget {
   @override
-  _NotificationsState createState() => _NotificationsState();
-}
 
-class _NotificationsState extends State<Notifications> {
-  bool _showNotifications = false; // Flag to control notification UI visibility
-
-  @override
-  void initState() {
-    super.initState();
-    // Check for existing notification permission (optional)
-    checkNotificationPermission();
-  }
-
-  void checkNotificationPermission() async {
-    // Platform-specific code to check notification permission
-    // If permission granted, set _showNotifications to true
-  }
-
-  void requestNotificationPermission() async {
-    // Platform-specific code to request notification permission
-    // If permission granted, update _showNotifications and potentially fetch notifications
-  }
-
-  void handleNotificationChoice(bool enable) {
-    setState(() {
-      _showNotifications = enable;
-      if (enable) {
-        // Request permission if not already granted (optional)
-        requestNotificationPermission();
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Show permission prompt if notifications are not enabled
-        if (!_showNotifications)
-          AlertDialog(
-            title: Text('Notifications'),
-            content: Text('Do you want to receive notifications?'),
-            actions: [
-              TextButton(
-                onPressed: () => handleNotificationChoice(false),
-                child: Text('No'),
-              ),
-              TextButton(
-                onPressed: () => handleNotificationChoice(true),
-                child: Text('Yes'),
-              ),
-            ],
-          ),
-
-        // Show notification UI if permission is granted or chosen to enable
-        if (_showNotifications)
-          Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Notifications', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  // List of notifications (implement logic to fetch and display notifications)
-                  // ...
-                ],
-              ),
-            ),
-          ),
-      ],
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Notifications',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            // List of notifications
+          ],
+        ),
+      ),
     );
   }
 }
-
 
 class SupportAndFeedback extends StatelessWidget {
   @override
