@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
+import 'package:garage_finder/pages/home_page.dart';
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: PaymentPage(),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Flutter Payment Example'),
+        ),
+        body: UserAccountAndWallet(), // Example of starting widget
+      ),
     );
   }
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:garage_finder/pages/payments.dart';
+import "package:garage_finder/pages/notifications.dart";
+import "package:garage_finder/pages/payments.dart";
 
 // Define a color palette
 const Color primaryColor = Colors.blue;
@@ -16,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String? userName;
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -54,28 +56,17 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: primaryColor,
         title: Center(
-          child: const Text(
-            'Garage Finder',
-            style: TextStyle(color: secondaryColor),
-          ),
+          child: const Text('Garage Finder',
+              style: TextStyle(color: secondaryColor)),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: IndexedStack(
+        index: _selectedIndex,
         children: [
-          WelcomeBanner(userName: userName),
-          const SizedBox(height: 16),
-          const SearchBar(),
-          const SizedBox(height: 16),
-          const QuickAccessButtons(),
-          const SizedBox(height: 16),
-          const RecentActivity(),
-          const SizedBox(height: 16),
-          const Notifications(),
-          const SizedBox(height: 16),
-          const SupportAndFeedback(),
-          const SizedBox(height: 16),
-          const UserAccountAndWallet(),
+          HomeContent(userName: userName),
+          MyAccountPage(),
+          PlaceholderWidget(
+              label: 'Logout Placeholder'), // Placeholder for logout
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -93,26 +84,80 @@ class _HomePageState extends State<HomePage> {
             label: 'Logout',
           ),
         ],
-        currentIndex: 0,
+        currentIndex: _selectedIndex,
         selectedItemColor: primaryColor,
         onTap: (int index) {
-          switch (index) {
-            case 1:
-              // Navigate to My Account page (PaymentPage)
-              Navigator.push(context, MaterialPageRoute(builder: (_) => PaymentPage()));
-              break;
-            case 2:
+          setState(() {
+            if (index == 2) {
               signUserOut();
-              break;
-          }
+            } else {
+              _selectedIndex = index;
+            }
+          });
         },
       ),
     );
   }
 }
 
-class WelcomeBanner extends StatelessWidget {
+class HomeContent extends StatelessWidget {
   final String? userName;
+
+  const HomeContent({Key? key, this.userName}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        WelcomeBanner(userName: userName ?? 'User'),
+        const SizedBox(height: 16),
+        SearchBar(),
+        const SizedBox(height: 16),
+        QuickAccessButtons(),
+        const SizedBox(height: 16),
+        RecentActivity(),
+        const SizedBox(height: 16),
+        Notifications(),
+        const SizedBox(height: 16),
+        SupportAndFeedback(),
+        const SizedBox(height: 16),
+        UserAccountAndWallet(),
+      ],
+    );
+  }
+}
+
+class MyAccountPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'My Account Page',
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class PlaceholderWidget extends StatelessWidget {
+  final String label;
+
+  const PlaceholderWidget({Key? key, required this.label}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        label,
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class WelcomeBanner extends StatelessWidget {
+  final String userName;
 
   const WelcomeBanner({Key? key, required this.userName}) : super(key: key);
 
@@ -128,14 +173,13 @@ class WelcomeBanner extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              userName != null ? 'Welcome, $userName!' : 'Welcome!',
+              'Welcome, $userName!',
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: secondaryColor,
               ),
             ),
-            // Optional: Add a profile icon
             Icon(
               Icons.person,
               size: 32,
@@ -149,14 +193,12 @@ class WelcomeBanner extends StatelessWidget {
 }
 
 class SearchBar extends StatelessWidget {
-  const SearchBar({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return TextField(
       decoration: InputDecoration(
         hintText: 'Search for garages...',
-        prefixIcon: const Icon(Icons.search, color: primaryColor),
+        prefixIcon: Icon(Icons.search, color: primaryColor),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -168,13 +210,11 @@ class SearchBar extends StatelessWidget {
 }
 
 class QuickAccessButtons extends StatelessWidget {
-  const QuickAccessButtons({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: const [
+      children: [
         QuickAccessButton(icon: Icons.garage, label: 'Nearby Garages'),
         QuickAccessButton(icon: Icons.build, label: 'Breakdown Assistance'),
         QuickAccessButton(icon: Icons.lightbulb, label: 'DIY Solutions'),
@@ -206,7 +246,7 @@ class QuickAccessButton extends StatelessWidget {
             },
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         Text(label, style: TextStyle(color: primaryColor)),
       ],
     );
@@ -214,8 +254,6 @@ class QuickAccessButton extends StatelessWidget {
 }
 
 class RecentActivity extends StatelessWidget {
-  const RecentActivity({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -223,7 +261,7 @@ class RecentActivity extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: const Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Recent Activity',
@@ -236,109 +274,36 @@ class RecentActivity extends StatelessWidget {
   }
 }
 
-class Notifications extends StatefulWidget {
-  @override
-  _NotificationsState createState() => _NotificationsState();
-}
-
-class _NotificationsState extends State<Notifications> {
-  bool _showNotifications = false; // Flag to control notification UI visibility
-
-  @override
-  void initState() {
-    super.initState();
-    // Check for existing notification permission (optional)
-    checkNotificationPermission();
-  }
-
-  void checkNotificationPermission() async {
-    // Platform-specific code to check notification permission
-    // If permission granted, set _showNotifications to true
-  }
-
-  void requestNotificationPermission() async {
-    // Platform-specific code to request notification permission
-    // If permission granted, update _showNotifications and potentially fetch notifications
-  }
-
-  void handleNotificationChoice(bool enable) {
-    setState(() {
-      _showNotifications = enable;
-      if (enable) {
-        // Request permission if not already granted (optional)
-        requestNotificationPermission();
-      }
-    });
-  }
-
+class Notifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Show permission prompt if notifications are not enabled
-        if (!_showNotifications)
-          AlertDialog(
-            title: Text('Notifications'),
-            content: Text('Do you want to receive notifications?'),
-            actions: [
-              TextButton(
-                onPressed: () => handleNotificationChoice(false),
-                child: Text('No'),
-              ),
-              TextButton(
-                onPressed: () => handleNotificationChoice(true),
-                child: Text('Yes'),
-              ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NotificationPage()),
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Notifications',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              // List of notifications
             ],
           ),
-
-        // Show notification UI if permission is granted or chosen to enable
-        if (_showNotifications)
-          Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Notifications', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  // List of notifications (implement logic to fetch and display notifications)
-                  // ...
-                ],
-              ),
-            ),
-          ),
-      ],
-
-class Notifications extends StatelessWidget {
-  const Notifications({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Notifications',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            // List of notifications
-          ],
         ),
       ),
-
     );
   }
 }
 
-
 class SupportAndFeedback extends StatelessWidget {
-  const SupportAndFeedback({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -346,7 +311,7 @@ class SupportAndFeedback extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: const Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Support and Feedback',
@@ -360,22 +325,29 @@ class SupportAndFeedback extends StatelessWidget {
 }
 
 class UserAccountAndWallet extends StatelessWidget {
-  const UserAccountAndWallet({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Account and Wallet',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            // User account and wallet details
-          ],
+    return GestureDetector(
+      onTap: () {
+        // Navigate to PaymentPage when the card is tapped
+        Navigator.push(
+          context,
+          PaymentPage.route(), // Use the named route to navigate to PaymentPage
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Account and Wallet',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              // User account and wallet details
+            ],
+          ),
         ),
       ),
     );
