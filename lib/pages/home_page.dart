@@ -186,35 +186,36 @@ class UserDetailsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 10,
+      shadowColor: Colors.black.withOpacity(0.2),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         child: Row(
           children: [
             CircleAvatar(
-              backgroundColor: primaryColor.withOpacity(0.1),
-              child: Icon(Icons.person, color: primaryColor, size: 48),
-              radius: 30,
+              backgroundColor: primaryColor.withOpacity(0.2),
+              child: Icon(Icons.person, color: primaryColor, size: 56),
+              radius: 36,
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 24),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Username:',
+                  Text('Username',
                       style: TextStyle(fontSize: 14, color: Colors.grey[600])),
                   Text(userName,
                       style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 28,
                           fontWeight: FontWeight.bold,
                           color: primaryColor)),
                   const SizedBox(height: 8),
-                  Text('Email:',
+                  Text('Email',
                       style: TextStyle(fontSize: 14, color: Colors.grey[600])),
                   Text(userEmail,
                       style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.w500,
                           color: Colors.black87)),
                 ],
@@ -231,24 +232,29 @@ class AboutUsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 10,
+      shadowColor: Colors.black.withOpacity(0.2),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         child: Row(
           children: [
-            Icon(Icons.info_outline, color: primaryColor, size: 40),
-            const SizedBox(width: 16),
+            Icon(Icons.info_outline, color: primaryColor, size: 48),
+            const SizedBox(width: 24),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('About Us',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor)),
                   const SizedBox(height: 8),
                   Text(
-                      'Garage Finder is your go-to solution for locating nearby garages and mechanics. We aim to make your car maintenance experience as smooth as possible.'),
+                    'Garage Finder is your go-to solution for locating nearby garages and mechanics. We aim to make your car maintenance experience as smooth as possible.',
+                    style: TextStyle(fontSize: 16, color: Colors.grey[800]),
+                  ),
                 ],
               ),
             ),
@@ -263,24 +269,29 @@ class ContactUsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 10,
+      shadowColor: Colors.black.withOpacity(0.2),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         child: Row(
           children: [
-            Icon(Icons.contact_mail, color: primaryColor, size: 40),
-            const SizedBox(width: 16),
+            Icon(Icons.contact_mail, color: primaryColor, size: 48),
+            const SizedBox(width: 24),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Contact Us',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor)),
                   const SizedBox(height: 8),
                   Text(
-                      'If you have any questions or feedback, feel free to reach out to us at support@garagefinder.com'),
+                    'If you have any questions or feedback, feel free to reach out to us at support@garagefinder.com',
+                    style: TextStyle(fontSize: 16, color: Colors.grey[800]),
+                  ),
                 ],
               ),
             ),
