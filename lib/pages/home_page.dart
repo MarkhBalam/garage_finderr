@@ -192,16 +192,33 @@ class UserDetailsCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Icon(Icons.person, color: primaryColor, size: 40),
+            CircleAvatar(
+              backgroundColor: primaryColor.withOpacity(0.1),
+              child: Icon(Icons.person, color: primaryColor, size: 48),
+              radius: 30,
+            ),
             const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Username: $userName',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                Text('Email: $userEmail', style: TextStyle(fontSize: 16)),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Username:',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+                  Text(userName,
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor)),
+                  const SizedBox(height: 8),
+                  Text('Email:',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+                  Text(userEmail,
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87)),
+                ],
+              ),
             ),
           ],
         ),
