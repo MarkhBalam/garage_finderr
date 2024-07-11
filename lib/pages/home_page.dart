@@ -190,12 +190,19 @@ class UserDetailsCard extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Text('Username: $userName',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            Text('Email: $userEmail', style: TextStyle(fontSize: 16)),
+            Icon(Icons.person, color: primaryColor, size: 40),
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Username: $userName',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Email: $userEmail', style: TextStyle(fontSize: 16)),
+              ],
+            ),
           ],
         ),
       ),
@@ -211,14 +218,23 @@ class AboutUsSection extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Text('About Us',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            Text(
-                'Garage Finder is your go-to solution for locating nearby garages and mechanics. We aim to make your car maintenance experience as smooth as possible.'),
+            Icon(Icons.info_outline, color: primaryColor, size: 40),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('About Us',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Text(
+                      'Garage Finder is your go-to solution for locating nearby garages and mechanics. We aim to make your car maintenance experience as smooth as possible.'),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -234,14 +250,23 @@ class ContactUsSection extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Text('Contact Us',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            Text(
-                'If you have any questions or feedback, feel free to reach out to us at support@garagefinder.com'),
+            Icon(Icons.contact_mail, color: primaryColor, size: 40),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Contact Us',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Text(
+                      'If you have any questions or feedback, feel free to reach out to us at support@garagefinder.com'),
+                ],
+              ),
+            ),
           ],
         ),
       ),
