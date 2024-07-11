@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Flutter Notification Example'),
+          title: Text('Garage Finder!'),
         ),
         body: NotificationPage(),
       ),
@@ -59,7 +59,7 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'Flutter Notification Example',
+        'Garage Finder!',
         style: TextStyle(fontSize: 20.0),
       ),
     );
