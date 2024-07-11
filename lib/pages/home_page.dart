@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:garage_finder/pages/payments.dart';
 
 // Define a color palette
 const Color primaryColor = Colors.blue;
@@ -15,7 +16,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String? userName;
-  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -54,17 +54,28 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: primaryColor,
         title: Center(
-          child: const Text('Garage Finder',
-              style: TextStyle(color: secondaryColor)),
+          child: const Text(
+            'Garage Finder',
+            style: TextStyle(color: secondaryColor),
+          ),
         ),
       ),
-      body: IndexedStack(
-        index: _selectedIndex,
+      body: ListView(
+        padding: const EdgeInsets.all(16),
         children: [
-          HomeContent(userName: userName),
-          MyAccountPage(),
-          PlaceholderWidget(
-              label: 'Logout Placeholder'), // Placeholder for logout
+          WelcomeBanner(userName: userName),
+          const SizedBox(height: 16),
+          const SearchBar(),
+          const SizedBox(height: 16),
+          const QuickAccessButtons(),
+          const SizedBox(height: 16),
+          const RecentActivity(),
+          const SizedBox(height: 16),
+          const Notifications(),
+          const SizedBox(height: 16),
+          const SupportAndFeedback(),
+          const SizedBox(height: 16),
+          const UserAccountAndWallet(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -82,80 +93,26 @@ class _HomePageState extends State<HomePage> {
             label: 'Logout',
           ),
         ],
-        currentIndex: _selectedIndex,
+        currentIndex: 0,
         selectedItemColor: primaryColor,
         onTap: (int index) {
-          setState(() {
-            if (index == 2) {
+          switch (index) {
+            case 1:
+              // Navigate to My Account page (PaymentPage)
+              Navigator.push(context, MaterialPageRoute(builder: (_) => PaymentPage()));
+              break;
+            case 2:
               signUserOut();
-            } else {
-              _selectedIndex = index;
-            }
-          });
+              break;
+          }
         },
       ),
     );
   }
 }
 
-class HomeContent extends StatelessWidget {
-  final String? userName;
-
-  const HomeContent({Key? key, this.userName}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        WelcomeBanner(userName: userName ?? 'User'),
-        const SizedBox(height: 16),
-        SearchBar(),
-        const SizedBox(height: 16),
-        QuickAccessButtons(),
-        const SizedBox(height: 16),
-        RecentActivity(),
-        const SizedBox(height: 16),
-        Notifications(),
-        const SizedBox(height: 16),
-        SupportAndFeedback(),
-        const SizedBox(height: 16),
-        UserAccountAndWallet(),
-      ],
-    );
-  }
-}
-
-class MyAccountPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'My Account Page',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-}
-
-class PlaceholderWidget extends StatelessWidget {
-  final String label;
-
-  const PlaceholderWidget({Key? key, required this.label}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        label,
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-}
-
 class WelcomeBanner extends StatelessWidget {
-  final String userName;
+  final String? userName;
 
   const WelcomeBanner({Key? key, required this.userName}) : super(key: key);
 
@@ -171,13 +128,14 @@ class WelcomeBanner extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Welcome, $userName!',
+              userName != null ? 'Welcome, $userName!' : 'Welcome!',
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: secondaryColor,
               ),
             ),
+            // Optional: Add a profile icon
             Icon(
               Icons.person,
               size: 32,
@@ -191,12 +149,14 @@ class WelcomeBanner extends StatelessWidget {
 }
 
 class SearchBar extends StatelessWidget {
+  const SearchBar({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return TextField(
       decoration: InputDecoration(
         hintText: 'Search for garages...',
-        prefixIcon: Icon(Icons.search, color: primaryColor),
+        prefixIcon: const Icon(Icons.search, color: primaryColor),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -208,11 +168,13 @@ class SearchBar extends StatelessWidget {
 }
 
 class QuickAccessButtons extends StatelessWidget {
+  const QuickAccessButtons({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
+      children: const [
         QuickAccessButton(icon: Icons.garage, label: 'Nearby Garages'),
         QuickAccessButton(icon: Icons.build, label: 'Breakdown Assistance'),
         QuickAccessButton(icon: Icons.lightbulb, label: 'DIY Solutions'),
@@ -244,7 +206,7 @@ class QuickAccessButton extends StatelessWidget {
             },
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(label, style: TextStyle(color: primaryColor)),
       ],
     );
@@ -252,6 +214,8 @@ class QuickAccessButton extends StatelessWidget {
 }
 
 class RecentActivity extends StatelessWidget {
+  const RecentActivity({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -259,7 +223,7 @@ class RecentActivity extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Recent Activity',
@@ -273,6 +237,8 @@ class RecentActivity extends StatelessWidget {
 }
 
 class Notifications extends StatelessWidget {
+  const Notifications({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -280,7 +246,7 @@ class Notifications extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Notifications',
@@ -294,6 +260,8 @@ class Notifications extends StatelessWidget {
 }
 
 class SupportAndFeedback extends StatelessWidget {
+  const SupportAndFeedback({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -301,7 +269,7 @@ class SupportAndFeedback extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Support and Feedback',
@@ -315,6 +283,8 @@ class SupportAndFeedback extends StatelessWidget {
 }
 
 class UserAccountAndWallet extends StatelessWidget {
+  const UserAccountAndWallet({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -322,10 +292,10 @@ class UserAccountAndWallet extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Account and Walle',
+            Text('Account and Wallet',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             // User account and wallet details
           ],
