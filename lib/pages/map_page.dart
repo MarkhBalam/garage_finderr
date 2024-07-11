@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:google_maps_yt/consts.dart';
+import 'package:garage_finder/pages/consts.dart';
 import 'package:location/location.dart';
 
 class MapPage extends StatefulWidget {
@@ -118,10 +118,13 @@ class _MapPageState extends State<MapPage> {
     List<LatLng> polylineCoordinates = [];
     PolylinePoints polylinePoints = PolylinePoints();
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      GOOGLE_MAPS_API_KEY,
-      PointLatLng(_pGooglePlex.latitude, _pGooglePlex.longitude),
-      PointLatLng(_pApplePark.latitude, _pApplePark.longitude),
-      travelMode: TravelMode.driving,
+      //GOOGLE_MAPS_API_KEY,
+      googleApiKey: GOOGLE_MAPS_API_KEY,
+      request: PolylineRequest(
+        origin: PointLatLng(_pGooglePlex.latitude, _pGooglePlex.longitude),
+        destination: PointLatLng(_pApplePark.latitude, _pApplePark.longitude),
+        mode: TravelMode.driving,
+      ),
     );
     if (result.points.isNotEmpty) {
       result.points.forEach((PointLatLng point) {
