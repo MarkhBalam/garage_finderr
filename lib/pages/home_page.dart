@@ -275,7 +275,6 @@ class RecentActivity extends StatelessWidget {
 
 class Notifications extends StatelessWidget {
   @override
-
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
