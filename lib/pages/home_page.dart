@@ -128,13 +128,122 @@ class HomeContent extends StatelessWidget {
   }
 }
 
-class MyAccountPage extends StatelessWidget {
+class MyAccountPage extends StatefulWidget {
+  @override
+  _MyAccountPageState createState() => _MyAccountPageState();
+}
+
+class _MyAccountPageState extends State<MyAccountPage> {
+  String? userName;
+  String? userEmail;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserDetails();
+  }
+
+  // Fetch user details from Firestore
+  Future<void> _fetchUserDetails() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      setState(() {
+        userName = userDoc.data()?['username'] ?? 'User';
+        userEmail = user.email;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'My Account Page',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        UserDetailsCard(
+            userName: userName ?? 'User',
+            userEmail: userEmail ?? 'Not available'),
+        const SizedBox(height: 16),
+        AboutUsSection(),
+        const SizedBox(height: 16),
+        ContactUsSection(),
+      ],
+    );
+  }
+}
+
+class UserDetailsCard extends StatelessWidget {
+  final String userName;
+  final String userEmail;
+
+  const UserDetailsCard(
+      {required this.userName, required this.userEmail, Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Username: $userName',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text('Email: $userEmail', style: TextStyle(fontSize: 16)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AboutUsSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('About Us',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text(
+                'Garage Finder is your go-to solution for locating nearby garages and mechanics. We aim to make your car maintenance experience as smooth as possible.'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ContactUsSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Contact Us',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text(
+                'If you have any questions or feedback, feel free to reach out to us at support@garagefinder.com'),
+          ],
+        ),
       ),
     );
   }
