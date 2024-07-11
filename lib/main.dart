@@ -4,6 +4,7 @@ import 'package:garage_finder/pages/auth_page.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:garage_finder/pages/home_page.dart';
+import 'package:garage_finder/pages/payments.dart';
 
 
 void main() async {
