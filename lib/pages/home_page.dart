@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:garage_finder/pages/notifications.dart";
 import "package:garage_finder/pages/payments.dart";
 import 'package:garage_finder/pages/common_car_problems.dart';
+import 'package:garage_finder/pages/map_pages.dart';
 import "package:garage_finder/pages/breakdown_assistance.dart";
 
 // Define a color palette
@@ -367,12 +368,14 @@ class QuickAccessButtons extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         QuickAccessButton(
-          icon: Icons.garage,
-          label: 'Nearby\n Garages',
-          onPressed: () {
-            // Navigate to Nearby Garages page
-          },
-        ),
+            icon: Icons.garage,
+            label: 'Nearby\n Garages',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MapPage()),
+              );
+            }),
         QuickAccessButton(
           icon: Icons.build,
           label: 'Breakdown\n Assistance',
