@@ -65,7 +65,7 @@ class _PaymentPageState extends State<PaymentPage> {
       child: ListTile(
         title: Text(
           method,
-          style: TextStyle(color: Colors.black), // Black text color
+          style: TextStyle(color: Colors.blue), // Black text color
         ),
         leading: Radio<String>(
           value: method,
