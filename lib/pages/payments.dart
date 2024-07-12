@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:garage_finder/pages/home_page.dart';
 
+void main() {
+  runApp(MyApp());
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -29,47 +33,50 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Payment'),
+        title: Text(
+          'Select Payment Method',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blue,
       ),
-      body: Column(
-        children: <Widget>[
-          ListTile(
-            title: Text('Cash'),
-            leading: Radio<String>(
-              value: 'Cash',
-              groupValue: _selectedPaymentMethod,
-              onChanged: (value) {
-                setState(() {
-                  _selectedPaymentMethod = value!;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: Text('Credit/Debit Card'),
-            leading: Radio<String>(
-              value: 'Credit/Debit Card',
-              groupValue: _selectedPaymentMethod,
-              onChanged: (value) {
-                setState(() {
-                  _selectedPaymentMethod = value!;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: Text('Mobile Money'),
-            leading: Radio<String>(
-              value: 'Mobile Money',
-              groupValue: _selectedPaymentMethod,
-              onChanged: (value) {
-                setState(() {
-                  _selectedPaymentMethod = value!;
-                });
-              },
-            ),
-          ),
-        ],
+      body: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(8.0), // Add padding to the main container
+        child: Column(
+          children: <Widget>[
+            _buildPaymentOption('Cash'),
+            Spacer(), // Add space between the options
+            _buildPaymentOption('Credit/Debit Card'),
+            Spacer(), // Add space between the options
+            _buildPaymentOption('Mobile Money'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentOption(String method) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[200], // Grey background color for the Container
+        borderRadius: BorderRadius.circular(8.0), // Optional: round the corners
+      ),
+      margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+      child: ListTile(
+        title: Text(
+          method,
+          style: TextStyle(color: Colors.black), // Black text color
+        ),
+        leading: Radio<String>(
+          value: method,
+          groupValue: _selectedPaymentMethod,
+          onChanged: (value) {
+            setState(() {
+              _selectedPaymentMethod = value!;
+            });
+          },
+          activeColor: Colors.blue,
+        ),
       ),
     );
   }
