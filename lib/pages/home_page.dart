@@ -273,6 +273,8 @@ class RecentActivity extends StatelessWidget {
 }
 
 
+//import 'package:flutter/material.dart';
+
 class Notifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -284,15 +286,21 @@ class Notifications extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Notifications',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            // List of notifications
+            ListTile(
+              leading: Icon(Icons.notifications, size: 40, color: Colors.blue),
+              title: Text(
+                'Notifications',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+            // List of notifications will go here
           ],
         ),
       ),
     );
   }
 }
+
 
 class SupportAndFeedback extends StatelessWidget {
   @override
