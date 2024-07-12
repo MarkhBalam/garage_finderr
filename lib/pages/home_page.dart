@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:garage_finder/pages/notifications.dart";
 import "package:garage_finder/pages/payments.dart";
 import 'package:garage_finder/pages/common_car_problems.dart';
+import "package:garage_finder/pages/breakdown_assistance.dart";
 
 // Define a color palette
 const Color primaryColor = Colors.blue;
@@ -366,27 +367,33 @@ class QuickAccessButtons extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         QuickAccessButton(
-            icon: Icons.garage,
-            label: 'Nearby\n Garages',
-            onPressed: () {
-              // Navigate to Nearby Garages page
-            }),
+          icon: Icons.garage,
+          label: 'Nearby\n Garages',
+          onPressed: () {
+            // Navigate to Nearby Garages page
+          },
+        ),
         QuickAccessButton(
-            icon: Icons.build,
-            label: 'Breakdown\n Assistance',
-            onPressed: () {
-              // Navigate to Breakdown Assistance page
-            }),
+          icon: Icons.build,
+          label: 'Breakdown\n Assistance',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BreakdownAssistancePage()),
+            );
+          },
+        ),
         QuickAccessButton(
-            icon: Icons.report_problem,
-            label: 'Common Car\n Problems',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CommonCarProblemsPage()),
-              );
-            }),
+          icon: Icons.report_problem,
+          label: 'Common Car\n Problems',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CommonCarProblemsPage()),
+            );
+          },
+        ),
       ],
     );
   }
@@ -397,12 +404,12 @@ class QuickAccessButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
 
-  const QuickAccessButton(
-      {required this.icon,
-      required this.label,
-      required this.onPressed,
-      Key? key})
-      : super(key: key);
+  const QuickAccessButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -417,11 +424,11 @@ class QuickAccessButton extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: primaryColor.withOpacity(0.1),
+                color: Colors.blue.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: IconButton(
-                icon: Icon(icon, size: 38, color: primaryColor),
+                icon: Icon(icon, size: 38, color: Colors.blue),
                 onPressed: onPressed,
               ),
             ),
