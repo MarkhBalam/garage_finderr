@@ -1,4 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:garage_finder/pages/commonproblems/flat_tire.dart';
+
+import 'package:flutter/material.dart';
+import 'package:garage_finder/pages/commonproblems/flat_tire.dart';
+import 'package:garage_finder/pages/commonproblems/dead_battery.dart';
+import 'package:garage_finder/pages/commonproblems/air_filter.dart';
+import 'package:garage_finder/pages/commonproblems/wiper_blade.dart';
+import 'package:garage_finder/pages/commonproblems/fluids.dart';
+import 'package:garage_finder/pages/commonproblems/headlight.dart';
+import 'package:garage_finder/pages/commonproblems/dead_battery.dart';
+import 'package:garage_finder/pages/commonproblems/tirepressure.dart';
+import 'package:garage_finder/pages/commonproblems/fusepage.dart';
+import 'package:garage_finder/pages/commonproblems/headlight_adjustment.dart';
 
 class CommonCarProblemsPage extends StatelessWidget {
   @override
@@ -13,106 +26,62 @@ class CommonCarProblemsPage extends StatelessWidget {
           ProblemTile(
             title: 'Flat Tire',
             subtitle: 'Instructions for changing a flat tire.',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FlatTirePage()),
-              );
-            },
+            onTap: () => _navigateTo(context, FlatTirePage()),
           ),
           ProblemTile(
             title: 'Dead Battery',
             subtitle: 'Instructions for jump-starting a car.',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DeadBatteryPage()),
-              );
-            },
+            onTap: () => _navigateTo(context, DeadBatteryPage()),
           ),
           ProblemTile(
             title: 'Replace Air Filter',
             subtitle: 'Instructions for replacing the air filter.',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AirFilterPage()),
-              );
-            },
+            onTap: () => _navigateTo(context, AirFilterPage()),
           ),
           ProblemTile(
             title: 'Wiper Blade Replacement',
             subtitle: 'Instructions for replacing wiper blades.',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => WiperBladePage()),
-              );
-            },
+            onTap: () => _navigateTo(context, WiperBladePage()),
           ),
           ProblemTile(
             title: 'Check and Top Up Fluids',
             subtitle: 'Instructions for checking and topping up car fluids.',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FluidsPage()),
-              );
-            },
+            onTap: () => _navigateTo(context, FluidsPage()),
           ),
           ProblemTile(
             title: 'Headlight Replacement',
             subtitle: 'Instructions for replacing headlights.',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HeadlightPage()),
-              );
-            },
+            onTap: () => _navigateTo(context, HeadlightPage()),
           ),
           ProblemTile(
             title: 'Clean Battery Terminals',
             subtitle: 'Instructions for cleaning battery terminals.',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => BatteryTerminalsPage()),
-              );
-            },
+            onTap: () => _navigateTo(context, DeadBatteryPage()),
           ),
           ProblemTile(
             title: 'Check Tire Pressure',
             subtitle: 'Instructions for checking and adjusting tire pressure.',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TirePressurePage()),
-              );
-            },
+            onTap: () => _navigateTo(context, TirePressurePage()),
           ),
           ProblemTile(
             title: 'Replace Fuse',
             subtitle: 'Instructions for replacing a blown fuse.',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FusePage()),
-              );
-            },
+            onTap: () => _navigateTo(context, FusePage()),
           ),
           ProblemTile(
             title: 'Adjust Headlights',
             subtitle: 'Instructions for adjusting your headlights.',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => HeadlightsAdjustmentPage()),
-              );
-            },
+            onTap: () => _navigateTo(context, HeadlightsAdjustmentPage()),
           ),
         ],
       ),
+    );
+  }
+
+  void _navigateTo(BuildContext context, Widget page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => page),
     );
   }
 }
@@ -136,158 +105,6 @@ class ProblemTile extends StatelessWidget {
       subtitle: Text(subtitle),
       leading: Icon(Icons.build, color: Colors.blue), // Build icon for problems
       onTap: onTap,
-    );
-  }
-}
-
-class FlatTirePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('How to Fix a Flat Tire'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text('Detailed instructions for fixing a flat tire.'),
-      ),
-    );
-  }
-}
-
-class DeadBatteryPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('How to Jump-Start a Dead Battery'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text('Detailed instructions for jump-starting a car.'),
-      ),
-    );
-  }
-}
-
-class AirFilterPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('How to Replace an Air Filter'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text('Detailed instructions for replacing the air filter.'),
-      ),
-    );
-  }
-}
-
-class WiperBladePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('How to Replace Wiper Blades'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text('Detailed instructions for replacing wiper blades.'),
-      ),
-    );
-  }
-}
-
-class FluidsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('How to Check and Top Up Fluids'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text(
-            'Detailed instructions for checking and topping up car fluids.'),
-      ),
-    );
-  }
-}
-
-class HeadlightPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('How to Replace Headlights'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text('Detailed instructions for replacing headlights.'),
-      ),
-    );
-  }
-}
-
-class BatteryTerminalsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('How to Clean Battery Terminals'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text('Detailed instructions for cleaning battery terminals.'),
-      ),
-    );
-  }
-}
-
-class TirePressurePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('How to Check Tire Pressure'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text(
-            'Detailed instructions for checking and adjusting tire pressure.'),
-      ),
-    );
-  }
-}
-
-class FusePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('How to Replace a Fuse'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text('Detailed instructions for replacing a blown fuse.'),
-      ),
-    );
-  }
-}
-
-class HeadlightsAdjustmentPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('How to Adjust Headlights'),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text('Detailed instructions for adjusting your headlights.'),
-      ),
     );
   }
 }
