@@ -204,7 +204,7 @@ class UserDetailsCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Username',
-                      style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+                      style: TextStyle(fontSize: 16, color: Colors.grey[500])),
                   Text(userName,
                       style: TextStyle(
                           fontSize: 28,
@@ -212,12 +212,12 @@ class UserDetailsCard extends StatelessWidget {
                           color: primaryColor)),
                   const SizedBox(height: 8),
                   Text('Email',
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                      style: TextStyle(fontSize: 21, color: Colors.grey[500])),
                   Text(userEmail,
                       style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Colors.black87)),
+                          color: Colors.black)),
                 ],
               ),
             ),
@@ -239,7 +239,7 @@ class AboutUsSection extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         child: Row(
           children: [
-            Icon(Icons.info_outline, color: primaryColor, size: 48),
+            Icon(Icons.info_outline, color: primaryColor, size: 40),
             const SizedBox(width: 24),
             Expanded(
               child: Column(
@@ -272,7 +272,7 @@ class ContactUsSection extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         child: Row(
           children: [
-            Icon(Icons.contact_mail, color: primaryColor, size: 48),
+            Icon(Icons.contact_mail, color: primaryColor, size: 40),
             const SizedBox(width: 24),
             Expanded(
               child: Column(
