@@ -420,12 +420,25 @@ class RecentActivity extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Recent Activity',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            // List of recent activities
+            Icon(Icons.history, color: primaryColor, size: 30),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Recent Activity',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
+                  const SizedBox(height: 5),
+                  // List of recent activities
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -448,12 +461,25 @@ class Notifications extends StatelessWidget {
         elevation: 5,
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Notifications',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              // List of notifications
+              Icon(Icons.notifications, color: primaryColor, size: 30),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Notifications',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    const SizedBox(height: 5),
+                    // List of notifications
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -470,12 +496,25 @@ class SupportAndFeedback extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Support and Feedback',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            // Support and feedback options
+            Icon(Icons.support_agent, color: primaryColor, size: 30),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Support and Feedback',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
+                  const SizedBox(height: 5),
+                  // Support and feedback options
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -499,12 +538,25 @@ class UserAccountAndWallet extends StatelessWidget {
         elevation: 5,
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Account and Wallet',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              // User account and wallet details
+              Icon(Icons.account_balance_wallet, color: primaryColor, size: 30),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Account and Wallet',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    const SizedBox(height: 5),
+                    // User account and wallet details
+                  ],
+                ),
+              ),
             ],
           ),
         ),
