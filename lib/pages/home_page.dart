@@ -579,7 +579,7 @@ class UserAccountAndWallet extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Account and Wallet',
+                    Text('Payments',
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
