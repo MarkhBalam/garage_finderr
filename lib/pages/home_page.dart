@@ -249,7 +249,7 @@ class AboutUsSection extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: primaryColor)),
+                          color: Colors.black)),
                   const SizedBox(height: 5),
                 ],
               ),
@@ -282,7 +282,7 @@ class ContactUsSection extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: primaryColor)),
+                          color: Colors.black)),
                   const SizedBox(height: 5),
                 ],
               ),
@@ -404,7 +404,9 @@ class QuickAccessButton extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
-            Text(label, style: TextStyle(color: primaryColor)),
+            Text(label,
+                style: TextStyle(
+                    color: Colors.black)), // Changed text color to black
           ],
         ),
       ),
