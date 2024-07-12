@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:garage_finder/pages/notifications.dart";
 import "package:garage_finder/pages/payments.dart";
+import 'package:garage_finder/pages/common_car_problems.dart';
 
 // Define a color palette
 const Color primaryColor = Colors.blue;
@@ -364,10 +365,28 @@ class QuickAccessButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        QuickAccessButton(icon: Icons.garage, label: 'Nearby\n Garages'),
-        QuickAccessButton(icon: Icons.build, label: 'Breakdown\n Assistance'),
         QuickAccessButton(
-            icon: Icons.report_problem, label: 'Common Car\n Problems'),
+            icon: Icons.garage,
+            label: 'Nearby\n Garages',
+            onPressed: () {
+              // Navigate to Nearby Garages page
+            }),
+        QuickAccessButton(
+            icon: Icons.build,
+            label: 'Breakdown\n Assistance',
+            onPressed: () {
+              // Navigate to Breakdown Assistance page
+            }),
+        QuickAccessButton(
+            icon: Icons.report_problem,
+            label: 'Common Car\n Problems',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CommonCarProblemsPage()),
+              );
+            }),
       ],
     );
   }
@@ -376,8 +395,13 @@ class QuickAccessButtons extends StatelessWidget {
 class QuickAccessButton extends StatelessWidget {
   final IconData icon;
   final String label;
+  final VoidCallback onPressed;
 
-  const QuickAccessButton({required this.icon, required this.label, Key? key})
+  const QuickAccessButton(
+      {required this.icon,
+      required this.label,
+      required this.onPressed,
+      Key? key})
       : super(key: key);
 
   @override
@@ -398,15 +422,11 @@ class QuickAccessButton extends StatelessWidget {
               ),
               child: IconButton(
                 icon: Icon(icon, size: 38, color: primaryColor),
-                onPressed: () {
-                  // Navigate to respective page
-                },
+                onPressed: onPressed,
               ),
             ),
             SizedBox(height: 8),
-            Text(label,
-                style: TextStyle(
-                    color: Colors.black)), // Changed text color to black
+            Text(label, style: TextStyle(color: Colors.black)),
           ],
         ),
       ),
