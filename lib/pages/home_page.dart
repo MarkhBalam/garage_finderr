@@ -327,17 +327,12 @@ class WelcomeBanner extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Welcome, $userName!',
+              'Welcome , $userName😊!',
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: secondaryColor,
               ),
-            ),
-            Icon(
-              Icons.person,
-              size: 32,
-              color: secondaryColor,
             ),
           ],
         ),
@@ -369,9 +364,10 @@ class QuickAccessButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        QuickAccessButton(icon: Icons.garage, label: 'Nearby Garages'),
-        QuickAccessButton(icon: Icons.build, label: 'Breakdown Assistance'),
-        QuickAccessButton(icon: Icons.lightbulb, label: 'DIY Solutions'),
+        QuickAccessButton(icon: Icons.garage, label: 'Nearby\n Garages'),
+        QuickAccessButton(icon: Icons.build, label: 'Breakdown\n Assistance'),
+        QuickAccessButton(
+            icon: Icons.report_problem, label: 'Common Car\n Problems'),
       ],
     );
   }
@@ -386,23 +382,32 @@ class QuickAccessButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: primaryColor.withOpacity(0.1),
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            icon: Icon(icon, size: 32, color: primaryColor),
-            onPressed: () {
-              // Navigate to respective page
-            },
-          ),
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: primaryColor.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: Icon(icon, size: 38, color: primaryColor),
+                onPressed: () {
+                  // Navigate to respective page
+                },
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(label, style: TextStyle(color: primaryColor)),
+          ],
         ),
-        SizedBox(height: 8),
-        Text(label, style: TextStyle(color: primaryColor)),
-      ],
+      ),
     );
   }
 }
