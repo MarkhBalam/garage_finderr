@@ -6,6 +6,7 @@ import "package:garage_finder/pages/payments.dart";
 import 'package:garage_finder/pages/common_car_problems.dart';
 import 'package:garage_finder/pages/map_pages.dart';
 import "package:garage_finder/pages/breakdown_assistance.dart";
+import "package:garage_finder/pages/recent_activity.dart";
 
 // Define a color palette
 const Color primaryColor = Colors.blue;
@@ -447,31 +448,41 @@ class QuickAccessButton extends StatelessWidget {
 class RecentActivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.history, color: primaryColor, size: 30),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Recent Activity',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  const SizedBox(height: 5),
-                  // List of recent activities
-                ],
+    return GestureDetector(
+      onTap: () {
+        // Navigate to RecentActivityPage when the card is tapped
+        Navigator.push(
+          context,
+          RecentActivityPage
+              .route(), // Use the named route to navigate to RecentActivityPage
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.history, color: primaryColor, size: 30),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Recent Activity',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    const SizedBox(height: 5),
+                    // List of recent activities
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
