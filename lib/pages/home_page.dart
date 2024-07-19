@@ -509,7 +509,7 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(foregroundColor: primaryColor),
+                style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
                 child: Text(
                   'Submit',
                   style: TextStyle(color: secondaryColor),
