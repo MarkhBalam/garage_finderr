@@ -441,10 +441,10 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Describe Your Problem',
+                'Describe  Your Car Problem',
                 style: customTextStyle,
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 13),
               TextFormField(
                 controller: _problemController,
                 decoration: InputDecoration(
@@ -463,7 +463,7 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
                   return null;
                 },
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 13),
               TextFormField(
                 controller: _carModelController,
                 decoration: InputDecoration(
@@ -481,7 +481,7 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
                   return null;
                 },
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 13),
               TextFormField(
                 controller: _contactNumberController,
                 decoration: InputDecoration(
