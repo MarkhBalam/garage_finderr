@@ -8,6 +8,7 @@ import 'package:garage_finder/pages/map_pages.dart';
 import "package:garage_finder/pages/breakdown_assistance.dart";
 import "package:garage_finder/pages/recent_activity.dart";
 import "package:garage_finder/pages/support_and_feedback.dart";
+import "package:garage_finder/pages/about_us.dart";
 
 // Define a color palette
 const Color primaryColor = Colors.blue;
@@ -236,30 +237,40 @@ class UserDetailsCard extends StatelessWidget {
 class AboutUsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      elevation: 10,
-      shadowColor: Colors.black.withOpacity(0.2),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Row(
-          children: [
-            Icon(Icons.info_outline, color: primaryColor, size: 40),
-            const SizedBox(width: 24),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('About Us',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  const SizedBox(height: 5),
-                ],
+    return GestureDetector(
+      onTap: () {
+        // Navigate to AboutUsPage when the card is tapped
+        Navigator.push(
+          context,
+          AboutUsPage.route(), // Use the named route to navigate to AboutUsPage
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        elevation: 10,
+        shadowColor: Colors.black.withOpacity(0.2),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            children: [
+              Icon(Icons.info_outline, color: primaryColor, size: 40),
+              const SizedBox(width: 24),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('About Us',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    const SizedBox(height: 5),
+                    // About us details
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
