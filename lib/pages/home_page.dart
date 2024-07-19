@@ -119,7 +119,6 @@ class HomeContent extends StatelessWidget {
       children: [
         WelcomeBanner(userName: userName ?? 'User'),
         const SizedBox(height: 16),
-        SearchBar(),
         const SizedBox(height: 16),
         QuickAccessButtons(),
         const SizedBox(height: 16),
@@ -364,23 +363,6 @@ class WelcomeBanner extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class SearchBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(
-        hintText: 'Search for garages...',
-        prefixIcon: Icon(Icons.search, color: primaryColor),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        filled: true,
-        fillColor: secondaryColor,
       ),
     );
   }
