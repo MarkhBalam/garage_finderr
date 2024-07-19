@@ -556,7 +556,7 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
                   padding: const EdgeInsets.symmetric(vertical: 15),
                 ),
                 child: Text(
-                  'Submit',
+                  'Submit ',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
