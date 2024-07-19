@@ -10,6 +10,8 @@ import "package:garage_finder/pages/recent_activity.dart";
 import "package:garage_finder/pages/support_and_feedback.dart";
 import "package:garage_finder/pages/about_us.dart";
 import "package:garage_finder/pages/contact_us.dart";
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 // Define a color palette
 const Color primaryColor = Colors.blue;
@@ -119,6 +121,7 @@ class HomeContent extends StatelessWidget {
       children: [
         WelcomeBanner(userName: userName ?? 'User'),
         const SizedBox(height: 16),
+        ProblemDescriptionForm(),
         const SizedBox(height: 16),
         QuickAccessButtons(),
         const SizedBox(height: 16),
@@ -362,6 +365,158 @@ class WelcomeBanner extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProblemDescriptionForm extends StatefulWidget {
+  @override
+  _ProblemDescriptionFormState createState() => _ProblemDescriptionFormState();
+}
+
+class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _problemController = TextEditingController();
+  final TextEditingController _carModelController = TextEditingController();
+  final TextEditingController _contactNumberController =
+      TextEditingController();
+  File? _selectedImage;
+
+  @override
+  void dispose() {
+    _problemController.dispose();
+    _carModelController.dispose();
+    _contactNumberController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState?.validate() ?? false) {
+      // Save problem description to Firestore or perform any other action
+      final problemDescription = _problemController.text;
+      final carModel = _carModelController.text;
+      final contactNumber = _contactNumberController.text;
+      print('Problem description submitted: $problemDescription');
+      print('Car model submitted: $carModel');
+      print('Contact number submitted: $contactNumber');
+      if (_selectedImage != null) {
+        print('Image path: ${_selectedImage!.path}');
+      }
+      // Clear the form after submission
+      _problemController.clear();
+      _carModelController.clear();
+      _contactNumberController.clear();
+      setState(() {
+        _selectedImage = null;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Describe Your Problem',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: _problemController,
+                decoration: InputDecoration(
+                  labelText: 'Problem Description',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a description of your problem';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: _carModelController,
+                decoration: InputDecoration(
+                  labelText: 'Car Model',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the model of your car';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: _contactNumberController,
+                decoration: InputDecoration(
+                  labelText: 'Contact Number',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.phone,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your contact number';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+              _selectedImage == null
+                  ? TextButton(
+                      onPressed: _pickImage,
+                      child: Text('Upload Picture'),
+                    )
+                  : Column(
+                      children: [
+                        Image.file(
+                          _selectedImage!,
+                          height: 100,
+                        ),
+                        TextButton(
+                          onPressed: _pickImage,
+                          child: Text('Change Picture'),
+                        ),
+                      ],
+                    ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: _submitForm,
+                style: ElevatedButton.styleFrom(foregroundColor: primaryColor),
+                child: Text(
+                  'Submit',
+                  style: TextStyle(color: secondaryColor),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
