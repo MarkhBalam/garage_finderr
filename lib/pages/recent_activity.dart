@@ -9,6 +9,7 @@ class RecentActivityPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text('Recent Activity'),
       ),
       body: Center(
