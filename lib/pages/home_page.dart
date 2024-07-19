@@ -404,7 +404,6 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
 
   void _submitForm() {
     if (_formKey.currentState?.validate() ?? false) {
-      // Save problem description to Firestore or perform any other action
       final problemDescription = _problemController.text;
       final carModel = _carModelController.text;
       final contactNumber = _contactNumberController.text;
@@ -414,7 +413,6 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
       if (_selectedImage != null) {
         print('Image path: ${_selectedImage!.path}');
       }
-      // Clear the form after submission
       _problemController.clear();
       _carModelController.clear();
       _contactNumberController.clear();
@@ -426,11 +424,17 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
 
   @override
   Widget build(BuildContext context) {
+    final customTextStyle = TextStyle(
+      fontSize: 20, // Customize font size
+      fontWeight: FontWeight.bold, // Customize font weight
+      color: Colors.blueGrey[800], // Customize text color
+    );
+
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 8,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
@@ -438,18 +442,18 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
             children: [
               Text(
                 'Describe Your Problem',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+                style: customTextStyle,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
               TextFormField(
                 controller: _problemController,
                 decoration: InputDecoration(
                   labelText: 'Problem Description',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.blueGrey[50],
                 ),
                 maxLines: 3,
                 validator: (value) {
@@ -459,12 +463,16 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
                   return null;
                 },
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
               TextFormField(
                 controller: _carModelController,
                 decoration: InputDecoration(
                   labelText: 'Car Model',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.blueGrey[50],
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -473,12 +481,16 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
                   return null;
                 },
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
               TextFormField(
                 controller: _contactNumberController,
                 decoration: InputDecoration(
                   labelText: 'Contact Number',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.blueGrey[50],
                 ),
                 keyboardType: TextInputType.phone,
                 validator: (value) {
@@ -488,31 +500,64 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
                   return null;
                 },
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
               _selectedImage == null
-                  ? TextButton(
-                      onPressed: _pickImage,
-                      child: Text('Upload Picture'),
+                  ? GestureDetector(
+                      onTap: _pickImage,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blueGrey, width: 2),
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.blueGrey[50],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.image, size: 50, color: Colors.blueGrey),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Upload Picture',
+                              style: TextStyle(color: Colors.blueGrey[800]),
+                            ),
+                          ],
+                        ),
+                      ),
                     )
                   : Column(
                       children: [
-                        Image.file(
-                          _selectedImage!,
-                          height: 100,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.file(
+                            _selectedImage!,
+                            height: 150,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                         TextButton(
                           onPressed: _pickImage,
-                          child: Text('Change Picture'),
+                          child: Text(
+                            'Change Picture',
+                            style: TextStyle(color: Colors.blueGrey[800]),
+                          ),
                         ),
                       ],
                     ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue, // Background color
+                  foregroundColor: Colors.white, // Text color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
                 child: Text(
                   'Submit',
-                  style: TextStyle(color: secondaryColor),
+                  style: TextStyle(fontSize: 16),
                 ),
               ),
             ],
