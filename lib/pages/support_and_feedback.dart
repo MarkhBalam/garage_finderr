@@ -7,13 +7,84 @@ class SupportAndFeedbackPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _messageController = TextEditingController();
+
+    void _submitFeedback() {
+      final feedbackMessage = _messageController.text;
+      // Handle feedback submission logic here (e.g., send feedbackMessage to the backend or Firebase)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Feedback submitted successfully!')),
+      );
+      _messageController.clear();
+    }
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueAccent,
         title: Text('Support and Feedback'),
+        centerTitle: true,
       ),
-      body: Center(
-        child: Text('This is the Support and Feedback Page'),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'We are ready to help you ☺!',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueGrey[800],
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'If you have any questions, issues, or feedback, please let us know.',
+                style: TextStyle(fontSize: 18, color: Colors.blueGrey[600]),
+              ),
+              SizedBox(height: 30),
+              TextFormField(
+                controller: _messageController,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  labelText: 'Type your Message here',
+                  labelStyle: TextStyle(fontSize: 18),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  filled: true,
+                  fillColor: Colors.blueGrey[50],
+                ),
+              ),
+              SizedBox(height: 30),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _submitFeedback,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+                  ),
+                  child: Text(
+                    'Submit',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: Text(
+                  'Thank you for your feedback!',
+                  style: TextStyle(fontSize: 16, color: Colors.blueGrey[600]),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
