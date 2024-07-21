@@ -12,6 +12,7 @@ import "package:garage_finder/pages/about_us.dart";
 import "package:garage_finder/pages/contact_us.dart";
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 
 // Define a color palette
 const Color primaryColor = Colors.blue;
@@ -402,32 +403,62 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
     }
   }
 
-  void _submitForm() {
+  Future<String?> _uploadImage(File image) async {
+    try {
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('problem_images')
+          .child(DateTime.now().toIso8601String() + '.jpg');
+      final uploadTask = ref.putFile(image);
+      final snapshot = await uploadTask;
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
+  }
+
+  void _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       final problemDescription = _problemController.text;
       final carModel = _carModelController.text;
       final contactNumber = _contactNumberController.text;
-      print('Problem description submitted: $problemDescription');
-      print('Car model submitted: $carModel');
-      print('Contact number submitted: $contactNumber');
+
+      String? imageUrl;
       if (_selectedImage != null) {
-        print('Image path: ${_selectedImage!.path}');
+        imageUrl = await _uploadImage(_selectedImage!);
       }
+
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      String? username = currentUser?.displayName ?? 'Anonymous';
+
+      await FirebaseFirestore.instance.collection('problems').add({
+        'problemDescription': problemDescription,
+        'carModel': carModel,
+        'contactNumber': contactNumber,
+        'imagePath': imageUrl,
+        'timestamp': FieldValue.serverTimestamp(),
+        'username': username,
+      });
+
       _problemController.clear();
       _carModelController.clear();
       _contactNumberController.clear();
       setState(() {
         _selectedImage = null;
       });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Problem submitted successfully!')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final customTextStyle = TextStyle(
-      fontSize: 20, // Customize font size
-      fontWeight: FontWeight.bold, // Customize font weight
-      color: Colors.blueGrey[800], // Customize text color
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+      color: Colors.blueGrey[800],
     );
 
     return Card(
@@ -440,18 +471,14 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Describe  Your Car Problem',
-                style: customTextStyle,
-              ),
+              Text('Describe Your Car Problem', style: customTextStyle),
               const SizedBox(height: 13),
               TextFormField(
                 controller: _problemController,
                 decoration: InputDecoration(
                   labelText: 'Problem Description',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                      borderRadius: BorderRadius.circular(12)),
                   filled: true,
                   fillColor: Colors.blueGrey[50],
                 ),
@@ -469,8 +496,7 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
                 decoration: InputDecoration(
                   labelText: 'Car Model',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                      borderRadius: BorderRadius.circular(12)),
                   filled: true,
                   fillColor: Colors.blueGrey[50],
                 ),
@@ -487,8 +513,7 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
                 decoration: InputDecoration(
                   labelText: 'Contact Number',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                      borderRadius: BorderRadius.circular(12)),
                   filled: true,
                   fillColor: Colors.blueGrey[50],
                 ),
@@ -516,10 +541,8 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
                           children: [
                             Icon(Icons.image, size: 50, color: Colors.blueGrey),
                             const SizedBox(height: 10),
-                            Text(
-                              'Upload Picture',
-                              style: TextStyle(color: Colors.blueGrey[800]),
-                            ),
+                            Text('Upload Picture',
+                                style: TextStyle(color: Colors.blueGrey[800])),
                           ],
                         ),
                       ),
@@ -537,10 +560,8 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
                         ),
                         TextButton(
                           onPressed: _pickImage,
-                          child: Text(
-                            'Change Picture',
-                            style: TextStyle(color: Colors.blueGrey[800]),
-                          ),
+                          child: Text('Change Picture',
+                              style: TextStyle(color: Colors.blueGrey[800])),
                         ),
                       ],
                     ),
@@ -548,17 +569,13 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
               ElevatedButton(
                 onPressed: _submitForm,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, // Background color
-                  foregroundColor: Colors.white, // Text color
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                      borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 15),
                 ),
-                child: Text(
-                  'Submit ',
-                  style: TextStyle(fontSize: 16),
-                ),
+                child: Text('Submit', style: TextStyle(fontSize: 16)),
               ),
             ],
           ),
