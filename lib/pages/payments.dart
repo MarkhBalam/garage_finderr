@@ -43,11 +43,11 @@ class _PaymentPageState extends State<PaymentPage> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: <Widget>[
-            _buildPaymentOption('Mobile Money', Icons.phone_android, Colors.orange),
+            _buildPaymentOption('Mobile Money', Icons.phone_android,  Colors.blue),
             Spacer(),
-            _buildPaymentOption('Cash', Icons.attach_money, Colors.blue), // Changed color to blue
+            _buildPaymentOption('Cash', Icons.attach_money, Colors.blue),
             Spacer(),
-            _buildPaymentOption('Credit/Debit Card', Icons.credit_card, Colors.grey),
+            _buildPaymentOption('Credit/Debit Card', Icons.credit_card,  Colors.blue),
           ],
         ),
       ),
@@ -62,17 +62,26 @@ class _PaymentPageState extends State<PaymentPage> {
       ),
       margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: ListTile(
-        title: Row(
-          children: [
-            Icon(icon, color: color),
-            SizedBox(width: 8.0),
-            Text(
-              method,
-              style: TextStyle(color: color),
-            ),
-          ],
+        leading: Icon(icon, color: color),
+        title: Text(
+          method,
+          style: TextStyle(color: Colors.blue),
         ),
-        trailing: Icon(Icons.chevron_right),
+        trailing: Radio<String>(
+          value: method,
+          groupValue: _selectedPaymentMethod,
+          onChanged: (value) {
+            setState(() {
+              _selectedPaymentMethod = value!;
+              if (method == 'Mobile Money') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MobileMoneyPage()),
+                );
+              }
+            });
+          },
+        ),
         onTap: () {
           setState(() {
             _selectedPaymentMethod = method;
