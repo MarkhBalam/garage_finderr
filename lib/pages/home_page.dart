@@ -415,21 +415,26 @@ class WelcomeBanner extends StatelessWidget {
 class QuickAccessButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         QuickAccessButton(
-            icon: Icons.garage,
-            label: 'Nearby\n Garages',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MapPage()),
-              );
-            }),
+          width: screenWidth,
+          imagePath: 'lib/images/apple.png',
+          label: 'Nearby Garages',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MapPage()),
+            );
+          },
+        ),
         QuickAccessButton(
-          icon: Icons.build,
-          label: 'Breakdown\n Assistance',
+          width: screenWidth,
+          imagePath: 'lib/images/another_image.png',
+          label: 'Breakdown Assistance',
           onPressed: () {
             Navigator.push(
               context,
@@ -439,8 +444,9 @@ class QuickAccessButtons extends StatelessWidget {
           },
         ),
         QuickAccessButton(
-          icon: Icons.report_problem,
-          label: 'Common Car\n Problems',
+          width: screenWidth,
+          imagePath: 'lib/images/google.png',
+          label: 'Common Car Problems',
           onPressed: () {
             Navigator.push(
               context,
@@ -449,8 +455,9 @@ class QuickAccessButtons extends StatelessWidget {
           },
         ),
         QuickAccessButton(
-          icon: Icons.description,
-          label: 'Problem\n Description',
+          width: screenWidth,
+          imagePath: 'lib/images/another_image.png',
+          label: 'Problem Description',
           onPressed: () {
             Navigator.push(
               context,
@@ -465,12 +472,14 @@ class QuickAccessButtons extends StatelessWidget {
 }
 
 class QuickAccessButton extends StatelessWidget {
-  final IconData icon;
+  final double width;
+  final String imagePath;
   final String label;
   final VoidCallback onPressed;
 
   const QuickAccessButton({
-    required this.icon,
+    required this.width,
+    required this.imagePath,
     required this.label,
     required this.onPressed,
     Key? key,
@@ -478,27 +487,34 @@ class QuickAccessButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                icon: Icon(icon, size: 38, color: Colors.blue),
-                onPressed: onPressed,
-              ),
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: width,
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.blue.withOpacity(0.1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3),
             ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(imagePath, width: 40, height: 40, fit: BoxFit.cover),
             SizedBox(height: 8),
-            Text(label, style: TextStyle(color: Colors.black)),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black, fontSize: 16),
+            ),
           ],
         ),
       ),
