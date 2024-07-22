@@ -69,19 +69,6 @@ class ContactUsPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Get in Touch',
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey[800],
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'If you have any questions or need assistance, please reach out to us. We\'re here to help!',
-                    style: TextStyle(fontSize: 16, color: Colors.blueGrey[600]),
-                  ),
                   SizedBox(height: 20),
                   Text(
                     'Contact Us Via',
@@ -94,19 +81,19 @@ class ContactUsPage extends StatelessWidget {
                   SizedBox(height: 10),
                   ListTile(
                     leading: Icon(Icons.email, color: Colors.blue),
-                    title: Text('Email Us'),
+                    title: Text('Email '),
                     subtitle: Text('mugishabalam4@gmail.com'),
                     onTap: _launchEmail,
                   ),
                   ListTile(
                     leading: Icon(Icons.phone, color: Colors.blue),
-                    title: Text('Call Us'),
+                    title: Text('Call '),
                     subtitle: Text('+256 706772881'),
                     onTap: _launchCall,
                   ),
                   ListTile(
                     leading: Icon(Icons.message, color: Colors.green),
-                    title: Text('WhatsApp Us'),
+                    title: Text('WhatsApp '),
                     subtitle: Text('+256 706772881'),
                     onTap: _launchWhatsApp,
                   ),
