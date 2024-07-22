@@ -9,36 +9,51 @@ class BreakdownAssistancePage extends StatelessWidget {
         title: Text('Breakdown Assistance'),
         backgroundColor: Colors.blue,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            SizedBox(height: 20),
-            QuickAccessButton(
-              icon: Icons.local_taxi,
-              label: 'Request a Tow Truck',
-              onPressed: () {
-                // Navigate to Request Tow Truck page
-              },
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'lib/images/c.jpg'), // Path to your background image
+                fit: BoxFit.cover,
+              ),
             ),
-            SizedBox(height: 10),
-            QuickAccessButton(
-              icon: Icons.phone,
-              label: 'Contact Breakdown Services',
-              onPressed: () {
-                // Call breakdown services
-              },
+          ),
+          // Main content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
+              children: [
+                SizedBox(height: 20),
+                QuickAccessButton(
+                  icon: Icons.local_taxi,
+                  label: 'Request a Tow Truck',
+                  onPressed: () {
+                    // Navigate to Request Tow Truck page
+                  },
+                ),
+                SizedBox(height: 10),
+                QuickAccessButton(
+                  icon: Icons.phone,
+                  label: 'Contact Breakdown Services',
+                  onPressed: () {
+                    // Call breakdown services
+                  },
+                ),
+                SizedBox(height: 10),
+                QuickAccessButton(
+                  icon: Icons.map,
+                  label: 'View Nearby Towing Services',
+                  onPressed: () {
+                    // Navigate to Nearby Towing Services page
+                  },
+                ),
+              ],
             ),
-            SizedBox(height: 10),
-            QuickAccessButton(
-              icon: Icons.map,
-              label: 'View Nearby Towing Services',
-              onPressed: () {
-                // Navigate to Nearby Towing Services page
-              },
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
