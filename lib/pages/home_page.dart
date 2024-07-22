@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import "package:garage_finder/pages/notifications.dart";
+import "package:garage_finder/pages/payments.dart";
+import 'package:garage_finder/pages/common_car_problems.dart';
+import 'package:garage_finder/pages/map_pages.dart';
 
 // Define a color palette
 const Color primaryColor = Colors.blue;
@@ -101,62 +105,6 @@ class _HomePageState extends State<HomePage> {
 class HomeContent extends StatelessWidget {
   final String? userName;
 
-  const HomeContent({Key? key, this.userName}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        WelcomeBanner(userName: userName ?? 'User'),
-        const SizedBox(height: 16),
-        SearchBar(),
-        const SizedBox(height: 16),
-        QuickAccessButtons(),
-        const SizedBox(height: 16),
-        RecentActivity(),
-        const SizedBox(height: 16),
-        Notifications(),
-        const SizedBox(height: 16),
-        SupportAndFeedback(),
-        const SizedBox(height: 16),
-        UserAccountAndWallet(),
-      ],
-    );
-  }
-}
-
-class MyAccountPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'My Account Page',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-}
-
-class PlaceholderWidget extends StatelessWidget {
-  final String label;
-
-  const PlaceholderWidget({Key? key, required this.label}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        label,
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-}
-
-class WelcomeBanner extends StatelessWidget {
-  final String userName;
-
   const WelcomeBanner({Key? key, required this.userName}) : super(key: key);
 
   @override
@@ -171,13 +119,14 @@ class WelcomeBanner extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Welcome, $userName!',
+              userName != null ? 'Welcome, $userName!' : 'Welcome!',
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: secondaryColor,
               ),
             ),
+            // Optional: Add a profile icon
             Icon(
               Icons.person,
               size: 32,
@@ -212,7 +161,7 @@ class QuickAccessButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
+      children: const [
         QuickAccessButton(icon: Icons.garage, label: 'Nearby Garages'),
         QuickAccessButton(icon: Icons.build, label: 'Breakdown Assistance'),
         QuickAccessButton(icon: Icons.lightbulb, label: 'DIY Solutions'),
@@ -224,8 +173,13 @@ class QuickAccessButtons extends StatelessWidget {
 class QuickAccessButton extends StatelessWidget {
   final IconData icon;
   final String label;
+  final VoidCallback onPressed;
 
-  const QuickAccessButton({required this.icon, required this.label, Key? key})
+  const QuickAccessButton(
+      {required this.icon,
+      required this.label,
+      required this.onPressed,
+      Key? key})
       : super(key: key);
 
   @override
@@ -244,7 +198,7 @@ class QuickAccessButton extends StatelessWidget {
             },
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(label, style: TextStyle(color: primaryColor)),
       ],
     );
@@ -259,7 +213,7 @@ class RecentActivity extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Recent Activity',
@@ -272,10 +226,84 @@ class RecentActivity extends StatelessWidget {
   }
 }
 
+class Notifications extends StatefulWidget {
+  @override
+  _NotificationsState createState() => _NotificationsState();
+}
 
-//import 'package:flutter/material.dart';
+class _NotificationsState extends State<Notifications> {
+  bool _showNotifications = false; // Flag to control notification UI visibility
+
+  @override
+  void initState() {
+    super.initState();
+    // Check for existing notification permission (optional)
+    checkNotificationPermission();
+  }
+
+  void checkNotificationPermission() async {
+    // Platform-specific code to check notification permission
+    // If permission granted, set _showNotifications to true
+  }
+
+  void requestNotificationPermission() async {
+    // Platform-specific code to request notification permission
+    // If permission granted, update _showNotifications and potentially fetch notifications
+  }
+
+  void handleNotificationChoice(bool enable) {
+    setState(() {
+      _showNotifications = enable;
+      if (enable) {
+        // Request permission if not already granted (optional)
+        requestNotificationPermission();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // Show permission prompt if notifications are not enabled
+        if (!_showNotifications)
+          AlertDialog(
+            title: Text('Notifications'),
+            content: Text('Do you want to receive notifications?'),
+            actions: [
+              TextButton(
+                onPressed: () => handleNotificationChoice(false),
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () => handleNotificationChoice(true),
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+
+        // Show notification UI if permission is granted or chosen to enable
+        if (_showNotifications)
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            elevation: 5,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Notifications', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  // List of notifications (implement logic to fetch and display notifications)
+                  // ...
+                ],
+              ),
+            ),
+          ),
+      ],
 
 class Notifications extends StatelessWidget {
+  const Notifications({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -283,24 +311,19 @@ class Notifications extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ListTile(
-              leading: Icon(Icons.notifications, size: 40, color: Colors.blue),
-              title: Text(
-                'Notifications',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-            // List of notifications will go here
+            Text('Notifications',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            // List of notifications
           ],
         ),
       ),
+
     );
   }
 }
-
 
 class SupportAndFeedback extends StatelessWidget {
   @override
@@ -310,7 +333,7 @@ class SupportAndFeedback extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Support and Feedback',
@@ -331,7 +354,7 @@ class UserAccountAndWallet extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Account and Wallet',
