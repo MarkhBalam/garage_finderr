@@ -13,15 +13,6 @@ class BreakdownAssistancePage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            Text(
-              'Need Breakdown Assistance?',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'We are here to help you. Choose from the options below:',
-              style: TextStyle(fontSize: 16),
-            ),
             SizedBox(height: 20),
             QuickAccessButton(
               icon: Icons.local_taxi,
