@@ -422,9 +422,9 @@ class QuickAccessButtons extends StatelessWidget {
       children: [
         QuickAccessButton(
           width: screenWidth,
-          imagePath: 'lib/images/undercar.jpg',
+          imagePath: 'lib/images/trial_form.jpg',
           label:
-              'Fill the Problem Description form first to locate suitable garage',
+              'Fill the Problem Description form first to locate a suitable garage',
           onPressed: () {
             Navigator.push(
               context,
@@ -459,7 +459,7 @@ class QuickAccessButtons extends StatelessWidget {
         QuickAccessButton(
           width: screenWidth,
           imagePath: 'lib/images/common.jpg',
-          label: 'Common Car Problems and solutions',
+          label: 'Common Car Problems and Solutions',
           onPressed: () {
             Navigator.push(
               context,
@@ -494,13 +494,21 @@ class QuickAccessButton extends StatelessWidget {
         width: width * 0.9, // Adjust width for better spacing
         margin: const EdgeInsets.symmetric(
             vertical: 12), // Increased vertical margin
-        padding: const EdgeInsets.all(16), // Adjusted padding
+        padding: const EdgeInsets.all(0), // Removed padding
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12), // Slightly larger radius
-          color: Colors.blue.withOpacity(0.1),
+          borderRadius:
+              BorderRadius.circular(15), // Larger radius for rounded corners
+          gradient: LinearGradient(
+            colors: [
+              Colors.blueAccent,
+              Colors.lightBlue
+            ], // Gradient background
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
+              color: Colors.blue.withOpacity(0.4),
               spreadRadius: 2,
               blurRadius: 5,
               offset: Offset(0, 3),
@@ -509,19 +517,29 @@ class QuickAccessButton extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18), // Slightly larger font size
+            Container(
+              padding: const EdgeInsets.all(12), // Padding for text container
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white, // White text for contrast
+                  fontSize: 18, // Slightly larger font size
+                  fontWeight: FontWeight.bold, // Bold text for emphasis
+                ),
+              ),
             ),
-            SizedBox(height: 16), // Space between text and image
-            Image.asset(
-              imagePath,
-              width: 300, // Width for larger images
-              height: 150, // Height for larger images
-              fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(15),
+                bottomRight: Radius.circular(15),
+              ), // Rounded bottom corners for the image
+              child: Image.asset(
+                imagePath,
+                width: double.infinity,
+                height: 200, // Height for larger images
+                fit: BoxFit.cover,
+              ),
             ),
           ],
         ),
