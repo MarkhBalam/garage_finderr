@@ -69,6 +69,48 @@ class _HomePageState extends State<HomePage> {
           child: const Text('Garage Finder',
               style: TextStyle(color: secondaryColor)),
         ),
+        actions: [
+          Stack(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.notifications,
+                  size: 30.0,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NotificationPage()),
+                  );
+                },
+              ),
+              Positioned(
+                right: 11,
+                top: 11,
+                child: Container(
+                  padding: EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  constraints: BoxConstraints(
+                    minWidth: 14,
+                    minHeight: 14,
+                  ),
+                  child: Text(
+                    '0', // Replace '0' with the actual count
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 8,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ],
       ),
       body: IndexedStack(
         index: _selectedIndex,
@@ -127,8 +169,6 @@ class HomeContent extends StatelessWidget {
         QuickAccessButtons(),
         const SizedBox(height: 16),
         RecentActivity(),
-        const SizedBox(height: 16),
-        Notifications(),
         const SizedBox(height: 16),
         SupportAndFeedback(),
         const SizedBox(height: 16),
