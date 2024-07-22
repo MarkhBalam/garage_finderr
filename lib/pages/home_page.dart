@@ -456,7 +456,7 @@ class QuickAccessButtons extends StatelessWidget {
         ),
         QuickAccessButton(
           width: screenWidth,
-          imagePath: 'lib/images/another_image.png',
+          imagePath: 'lib/images/undercar.jpg',
           label: 'Problem Description',
           onPressed: () {
             Navigator.push(
@@ -490,11 +490,12 @@ class QuickAccessButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        width: width,
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: const EdgeInsets.all(8),
+        width: width * 0.9, // Adjust width for better spacing
+        margin: const EdgeInsets.symmetric(
+            vertical: 12), // Increased vertical margin
+        padding: const EdgeInsets.all(16), // Increased padding
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12), // Slightly larger radius
           color: Colors.blue.withOpacity(0.1),
           boxShadow: [
             BoxShadow(
@@ -508,12 +509,19 @@ class QuickAccessButton extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(imagePath, width: 40, height: 40, fit: BoxFit.cover),
-            SizedBox(height: 8),
+            Image.asset(
+              imagePath,
+              width: 100, // Increased width for larger images
+              height: 100, // Increased height for larger images
+              fit: BoxFit.cover,
+            ),
+            SizedBox(height: 16), // Increased space between image and text
             Text(
               label,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black, fontSize: 16),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18), // Slightly larger font size
             ),
           ],
         ),
