@@ -424,6 +424,7 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
   final TextEditingController _contactNumberController =
       TextEditingController();
   File? _selectedImage;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -460,6 +461,10 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
 
   void _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isLoading = true;
+      });
+
       final problemDescription = _problemController.text;
       final carModel = _carModelController.text;
       final contactNumber = _contactNumberController.text;
@@ -486,10 +491,12 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
       _contactNumberController.clear();
       setState(() {
         _selectedImage = null;
+        _isLoading = false;
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Problem submitted successfully!')));
+        SnackBar(content: Text('Problem submitted successfully!')),
+      );
     }
   }
 
@@ -606,17 +613,19 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionForm> {
                       ],
                     ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                ),
-                child: Text('Submit', style: TextStyle(fontSize: 16)),
-              ),
+              _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : ElevatedButton(
+                      onPressed: _submitForm,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                      ),
+                      child: Text('Submit', style: TextStyle(fontSize: 16)),
+                    ),
             ],
           ),
         ),
