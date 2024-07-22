@@ -494,7 +494,7 @@ class QuickAccessButton extends StatelessWidget {
         width: width * 0.9, // Adjust width for better spacing
         margin: const EdgeInsets.symmetric(
             vertical: 12), // Increased vertical margin
-        padding: const EdgeInsets.all(16), // Increased padding
+        padding: const EdgeInsets.all(16), // Adjusted padding
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12), // Slightly larger radius
           color: Colors.blue.withOpacity(0.1),
@@ -508,21 +508,20 @@ class QuickAccessButton extends StatelessWidget {
           ],
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              imagePath,
-              width: 300, // Increased width for larger images
-              height: 150, // Increased height for larger images
-              fit: BoxFit.cover,
-            ),
-            SizedBox(height: 16), // Increased space between image and text
             Text(
               label,
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 18), // Slightly larger font size
+            ),
+            SizedBox(height: 16), // Space between text and image
+            Image.asset(
+              imagePath,
+              width: 300, // Width for larger images
+              height: 150, // Height for larger images
+              fit: BoxFit.cover,
             ),
           ],
         ),
