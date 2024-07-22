@@ -422,18 +422,20 @@ class QuickAccessButtons extends StatelessWidget {
       children: [
         QuickAccessButton(
           width: screenWidth,
-          imagePath: 'lib/images/c.jpg',
-          label: 'Nearby Garages',
+          imagePath: 'lib/images/undercar.jpg',
+          label:
+              'Fill the Problem Description form first to locate suitable garage',
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MapPage()),
+              MaterialPageRoute(
+                  builder: (context) => ProblemDescriptionFormPage()),
             );
           },
         ),
         QuickAccessButton(
           width: screenWidth,
-          imagePath: 'lib/images/undercar.jpg',
+          imagePath: 'lib/images/c.jpg',
           label: 'Breakdown Assistance',
           onPressed: () {
             Navigator.push(
@@ -445,24 +447,23 @@ class QuickAccessButtons extends StatelessWidget {
         ),
         QuickAccessButton(
           width: screenWidth,
-          imagePath: 'lib/images/common.jpg',
-          label: 'Common Car Problems',
+          imagePath: 'lib/images/undercar.jpg',
+          label: 'Nearby Garages',
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CommonCarProblemsPage()),
+              MaterialPageRoute(builder: (context) => MapPage()),
             );
           },
         ),
         QuickAccessButton(
           width: screenWidth,
-          imagePath: 'lib/images/undercar.jpg',
-          label: 'Problem Description',
+          imagePath: 'lib/images/common.jpg',
+          label: 'Common Car Problems and solutions',
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => ProblemDescriptionFormPage()),
+              MaterialPageRoute(builder: (context) => CommonCarProblemsPage()),
             );
           },
         ),
