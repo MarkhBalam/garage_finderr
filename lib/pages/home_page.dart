@@ -105,6 +105,216 @@ class _HomePageState extends State<HomePage> {
 class HomeContent extends StatelessWidget {
   final String? userName;
 
+  const HomeContent({Key? key, this.userName}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        WelcomeBanner(userName: userName ?? 'User'),
+        const SizedBox(height: 16),
+        SearchBar(),
+        const SizedBox(height: 16),
+        QuickAccessButtons(),
+        const SizedBox(height: 16),
+        RecentActivity(),
+        const SizedBox(height: 16),
+        Notifications(),
+        const SizedBox(height: 16),
+        SupportAndFeedback(),
+        const SizedBox(height: 16),
+        UserAccountAndWallet(),
+      ],
+    );
+  }
+}
+
+class MyAccountPage extends StatefulWidget {
+  @override
+  _MyAccountPageState createState() => _MyAccountPageState();
+}
+
+class _MyAccountPageState extends State<MyAccountPage> {
+  String? userName;
+  String? userEmail;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserDetails();
+  }
+
+  // Fetch user details from Firestore
+  Future<void> _fetchUserDetails() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      setState(() {
+        userName = userDoc.data()?['username'] ?? 'User';
+        userEmail = user.email;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        UserDetailsCard(
+            userName: userName ?? 'User',
+            userEmail: userEmail ?? 'Not available'),
+        const SizedBox(height: 16),
+        AboutUsSection(),
+        const SizedBox(height: 16),
+        ContactUsSection(),
+      ],
+    );
+  }
+}
+
+class UserDetailsCard extends StatelessWidget {
+  final String userName;
+  final String userEmail;
+
+  const UserDetailsCard(
+      {required this.userName, required this.userEmail, Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 10,
+      shadowColor: Colors.black.withOpacity(0.2),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: primaryColor.withOpacity(0.2),
+              child: Icon(Icons.person, color: primaryColor, size: 56),
+              radius: 36,
+            ),
+            const SizedBox(width: 24),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Username',
+                      style: TextStyle(fontSize: 16, color: Colors.grey[500])),
+                  Text(userName,
+                      style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor)),
+                  const SizedBox(height: 8),
+                  Text('Email',
+                      style: TextStyle(fontSize: 21, color: Colors.grey[500])),
+                  Text(userEmail,
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AboutUsSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 10,
+      shadowColor: Colors.black.withOpacity(0.2),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Row(
+          children: [
+            Icon(Icons.info_outline, color: primaryColor, size: 40),
+            const SizedBox(width: 24),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('About Us',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
+                  const SizedBox(height: 5),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ContactUsSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 10,
+      shadowColor: Colors.black.withOpacity(0.2),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Row(
+          children: [
+            Icon(Icons.contact_mail, color: primaryColor, size: 40),
+            const SizedBox(width: 24),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Contact Us',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
+                  const SizedBox(height: 5),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PlaceholderWidget extends StatelessWidget {
+  final String label;
+
+  const PlaceholderWidget({Key? key, required this.label}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        label,
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class WelcomeBanner extends StatelessWidget {
+  final String userName;
+
   const WelcomeBanner({Key? key, required this.userName}) : super(key: key);
 
   @override
@@ -119,18 +329,12 @@ class HomeContent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              userName != null ? 'Welcome, $userName!' : 'Welcome!',
+              'Welcome , $userName😊!',
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: secondaryColor,
               ),
-            ),
-            // Optional: Add a profile icon
-            Icon(
-              Icons.person,
-              size: 32,
-              color: secondaryColor,
             ),
           ],
         ),
@@ -161,10 +365,32 @@ class QuickAccessButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: const [
-        QuickAccessButton(icon: Icons.garage, label: 'Nearby Garages'),
-        QuickAccessButton(icon: Icons.build, label: 'Breakdown Assistance'),
-        QuickAccessButton(icon: Icons.lightbulb, label: 'DIY Solutions'),
+      children: [
+        QuickAccessButton(
+            icon: Icons.garage,
+            label: 'Nearby\n Garages',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MapPage()),
+              );
+            }),
+        QuickAccessButton(
+            icon: Icons.build,
+            label: 'Breakdown\n Assistance',
+            onPressed: () {
+              // Navigate to Breakdown Assistance page
+            }),
+        QuickAccessButton(
+            icon: Icons.report_problem,
+            label: 'Common Car\n Problems',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CommonCarProblemsPage()),
+              );
+            }),
       ],
     );
   }
@@ -184,23 +410,30 @@ class QuickAccessButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: primaryColor.withOpacity(0.1),
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            icon: Icon(icon, size: 32, color: primaryColor),
-            onPressed: () {
-              // Navigate to respective page
-            },
-          ),
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: primaryColor.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: Icon(icon, size: 38, color: primaryColor),
+                onPressed: onPressed,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(label, style: TextStyle(color: Colors.black)),
+          ],
         ),
-        const SizedBox(height: 8),
-        Text(label, style: TextStyle(color: primaryColor)),
-      ],
+      ),
     );
   }
 }
@@ -213,12 +446,25 @@ class RecentActivity extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: const Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Recent Activity',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            // List of recent activities
+            Icon(Icons.history, color: primaryColor, size: 30),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Recent Activity',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
+                  const SizedBox(height: 5),
+                  // List of recent activities
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -226,101 +472,44 @@ class RecentActivity extends StatelessWidget {
   }
 }
 
-class Notifications extends StatefulWidget {
-  @override
-  _NotificationsState createState() => _NotificationsState();
-}
-
-class _NotificationsState extends State<Notifications> {
-  bool _showNotifications = false; // Flag to control notification UI visibility
-
-  @override
-  void initState() {
-    super.initState();
-    // Check for existing notification permission (optional)
-    checkNotificationPermission();
-  }
-
-  void checkNotificationPermission() async {
-    // Platform-specific code to check notification permission
-    // If permission granted, set _showNotifications to true
-  }
-
-  void requestNotificationPermission() async {
-    // Platform-specific code to request notification permission
-    // If permission granted, update _showNotifications and potentially fetch notifications
-  }
-
-  void handleNotificationChoice(bool enable) {
-    setState(() {
-      _showNotifications = enable;
-      if (enable) {
-        // Request permission if not already granted (optional)
-        requestNotificationPermission();
-      }
-    });
-  }
-
+class Notifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Show permission prompt if notifications are not enabled
-        if (!_showNotifications)
-          AlertDialog(
-            title: Text('Notifications'),
-            content: Text('Do you want to receive notifications?'),
-            actions: [
-              TextButton(
-                onPressed: () => handleNotificationChoice(false),
-                child: Text('No'),
-              ),
-              TextButton(
-                onPressed: () => handleNotificationChoice(true),
-                child: Text('Yes'),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NotificationPage()),
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.notifications, color: primaryColor, size: 30),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Notifications',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    const SizedBox(height: 5),
+                    // List of notifications
+                  ],
+                ),
               ),
             ],
           ),
-
-        // Show notification UI if permission is granted or chosen to enable
-        if (_showNotifications)
-          Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Notifications', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  // List of notifications (implement logic to fetch and display notifications)
-                  // ...
-                ],
-              ),
-            ),
-          ),
-      ],
-
-class Notifications extends StatelessWidget {
-  const Notifications({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Notifications',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            // List of notifications
-          ],
         ),
       ),
-
     );
   }
 }
@@ -333,12 +522,25 @@ class SupportAndFeedback extends StatelessWidget {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: const Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Support and Feedback',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            // Support and feedback options
+            Icon(Icons.support_agent, color: primaryColor, size: 30),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Support and Feedback',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
+                  const SizedBox(height: 5),
+                  // Support and feedback options
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -349,18 +551,40 @@ class SupportAndFeedback extends StatelessWidget {
 class UserAccountAndWallet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Account and Wallet',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            // User account and wallet details
-          ],
+    return GestureDetector(
+      onTap: () {
+        // Navigate to PaymentPage when the card is tapped
+        Navigator.push(
+          context,
+          PaymentPage.route(), // Use the named route to navigate to PaymentPage
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.account_balance_wallet, color: primaryColor, size: 30),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Account and Wallet',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    const SizedBox(height: 5),
+                    // User account and wallet details
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
