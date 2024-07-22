@@ -422,7 +422,7 @@ class QuickAccessButtons extends StatelessWidget {
       children: [
         QuickAccessButton(
           width: screenWidth,
-          imagePath: 'lib/images/apple.png',
+          imagePath: 'lib/images/c.jpg',
           label: 'Nearby Garages',
           onPressed: () {
             Navigator.push(
@@ -433,7 +433,7 @@ class QuickAccessButtons extends StatelessWidget {
         ),
         QuickAccessButton(
           width: screenWidth,
-          imagePath: 'lib/images/another_image.png',
+          imagePath: 'lib/images/undercar.jpg',
           label: 'Breakdown Assistance',
           onPressed: () {
             Navigator.push(
@@ -445,7 +445,7 @@ class QuickAccessButtons extends StatelessWidget {
         ),
         QuickAccessButton(
           width: screenWidth,
-          imagePath: 'lib/images/google.png',
+          imagePath: 'lib/images/common.jpg',
           label: 'Common Car Problems',
           onPressed: () {
             Navigator.push(
@@ -511,8 +511,8 @@ class QuickAccessButton extends StatelessWidget {
           children: [
             Image.asset(
               imagePath,
-              width: 100, // Increased width for larger images
-              height: 100, // Increased height for larger images
+              width: 300, // Increased width for larger images
+              height: 150, // Increased height for larger images
               fit: BoxFit.cover,
             ),
             SizedBox(height: 16), // Increased space between image and text
