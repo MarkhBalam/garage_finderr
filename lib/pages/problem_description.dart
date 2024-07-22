@@ -105,134 +105,159 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text('Problem Description Form'),
-        actions: [],
       ),
-      body: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        elevation: 8,
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Describe Your Car Problem To locate suitable meachanic',
-                    style: customTextStyle),
-                const SizedBox(height: 13),
-                TextFormField(
-                  controller: _problemController,
-                  decoration: InputDecoration(
-                    labelText: 'Problem Description',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    filled: true,
-                    fillColor: Colors.blueGrey[50],
-                  ),
-                  maxLines: 3,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a description of your problem';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 13),
-                TextFormField(
-                  controller: _carModelController,
-                  decoration: InputDecoration(
-                    labelText: 'Car Model',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    filled: true,
-                    fillColor: Colors.blueGrey[50],
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the model of your car';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 13),
-                TextFormField(
-                  controller: _contactNumberController,
-                  decoration: InputDecoration(
-                    labelText: 'Contact Number',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    filled: true,
-                    fillColor: Colors.blueGrey[50],
-                  ),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your contact number';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 15),
-                _selectedImage == null
-                    ? GestureDetector(
-                        onTap: _pickImage,
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Colors.blueGrey, width: 2),
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.blueGrey[50],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.image,
-                                  size: 50, color: Colors.blueGrey),
-                              const SizedBox(height: 10),
-                              Text('Upload Picture',
-                                  style:
-                                      TextStyle(color: Colors.blueGrey[800])),
-                            ],
-                          ),
-                        ),
-                      )
-                    : Column(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.file(
-                              _selectedImage!,
-                              height: 150,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: _pickImage,
-                            child: Text('Change Picture',
-                                style: TextStyle(color: Colors.blueGrey[800])),
-                          ),
-                        ],
-                      ),
-                const SizedBox(height: 20),
-                _isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : ElevatedButton(
-                        onPressed: _submitForm,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                        ),
-                        child: Text('Submit', style: TextStyle(fontSize: 16)),
-                      ),
-              ],
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'lib/images/c.jpg'), // Path to your background image
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
+          // Form content
+          Center(
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              elevation: 8,
+              margin: EdgeInsets.all(20),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            'Describe Your Car Problem To Locate Suitable Mechanic',
+                            style: customTextStyle),
+                        const SizedBox(height: 13),
+                        TextFormField(
+                          controller: _problemController,
+                          decoration: InputDecoration(
+                            labelText: 'Problem Description',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            filled: true,
+                            fillColor: Colors.blueGrey[50],
+                          ),
+                          maxLines: 3,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a description of your problem';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 13),
+                        TextFormField(
+                          controller: _carModelController,
+                          decoration: InputDecoration(
+                            labelText: 'Car Model',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            filled: true,
+                            fillColor: Colors.blueGrey[50],
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter the model of your car';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 13),
+                        TextFormField(
+                          controller: _contactNumberController,
+                          decoration: InputDecoration(
+                            labelText: 'Contact Number',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            filled: true,
+                            fillColor: Colors.blueGrey[50],
+                          ),
+                          keyboardType: TextInputType.phone,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your contact number';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 15),
+                        _selectedImage == null
+                            ? GestureDetector(
+                                onTap: _pickImage,
+                                child: Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.blueGrey, width: 2),
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: Colors.blueGrey[50],
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.image,
+                                          size: 50, color: Colors.blueGrey),
+                                      const SizedBox(height: 10),
+                                      Text('Upload Picture',
+                                          style: TextStyle(
+                                              color: Colors.blueGrey[800])),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : Column(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.file(
+                                      _selectedImage!,
+                                      height: 150,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: _pickImage,
+                                    child: Text('Change Picture',
+                                        style: TextStyle(
+                                            color: Colors.blueGrey[800])),
+                                  ),
+                                ],
+                              ),
+                        const SizedBox(height: 20),
+                        _isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : ElevatedButton(
+                                onPressed: _submitForm,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 15),
+                                ),
+                                child: Text('Submit',
+                                    style: TextStyle(fontSize: 16)),
+                              ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
