@@ -30,19 +30,6 @@ class SupportAndFeedbackPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'We are ready to help you ☺!',
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueGrey[800],
-                ),
-              ),
-              SizedBox(height: 20),
-              Text(
-                'If you have any questions, issues, or feedback, please let us know.',
-                style: TextStyle(fontSize: 18, color: Colors.blueGrey[600]),
-              ),
               SizedBox(height: 30),
               TextFormField(
                 controller: _messageController,
