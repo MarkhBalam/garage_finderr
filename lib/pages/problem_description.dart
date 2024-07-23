@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:garage_finder/pages/map_pages.dart'; // Import your MapPage
 
 class ProblemDescriptionFormPage extends StatefulWidget {
   @override
@@ -89,6 +90,12 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Problem submitted successfully!')),
+      );
+
+      // Navigate to MapPage after successful submission
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MapPage()),
       );
     }
   }
