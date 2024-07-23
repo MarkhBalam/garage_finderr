@@ -8,80 +8,95 @@ class FlatTirePage extends StatelessWidget {
         title: Text('How to Fix a Flat Tire'),
         backgroundColor: Colors.blue,
       ),
-      body: Padding(
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'lib/images/flat_tire.jpg'), // Path to your background image
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Semi-transparent overlay
+          Container(
+            color: Colors.black.withOpacity(0.5),
+          ),
+          // Main content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
+              children: [
+                _buildInstructionCard(
+                  '1. Find a Safe Location:',
+                  'Pull over to a safe location away from traffic.',
+                ),
+                _buildInstructionCard(
+                  '2. Remove Hubcap or Wheel Cover:',
+                  'Use a flathead screwdriver or a hubcap removal tool.',
+                ),
+                _buildInstructionCard(
+                  '3. Loosen Lug Nuts:',
+                  'Use a lug wrench to loosen, but don’t remove the lug nuts.',
+                ),
+                _buildInstructionCard(
+                  '4. Lift the Vehicle:',
+                  'Use a jack to lift the vehicle off the ground.',
+                ),
+                _buildInstructionCard(
+                  '5. Remove the Flat Tire:',
+                  'Remove the loosened lug nuts and take off the flat tire.',
+                ),
+                _buildInstructionCard(
+                  '6. Install the Spare Tire:',
+                  'Place the spare tire on the wheel hub and tighten the lug nuts.',
+                ),
+                _buildInstructionCard(
+                  '7. Lower the Vehicle:',
+                  'Carefully lower the vehicle back to the ground.',
+                ),
+                _buildInstructionCard(
+                  '8. Replace the Hubcap or Wheel Cover:',
+                  'Reattach the hubcap or wheel cover if applicable.',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInstructionCard(String title, String description) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 5,
+      color: Colors.white.withOpacity(0.8),
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '1. Find a Safe Location:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.blue,
+              ),
             ),
+            SizedBox(height: 5),
             Text(
-              '   Pull over to a safe location away from traffic.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '2. Remove Hubcap or Wheel Cover:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Use a flathead screwdriver or a hubcap removal tool.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '3. Loosen Lug Nuts:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Use a lug wrench to loosen, but don’t remove the lug nuts.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '4. Lift the Vehicle:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Use a jack to lift the vehicle off the ground.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '5. Remove the Flat Tire:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Remove the loosened lug nuts and take off the flat tire.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '6. Install the Spare Tire:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Place the spare tire on the wheel hub and tighten the lug nuts.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '7. Lower the Vehicle:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Carefully lower the vehicle back to the ground.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '8. Replace the Hubcap or Wheel Cover:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Reattach the hubcap or wheel cover if applicable.',
-              style: TextStyle(fontSize: 16),
+              description,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
             ),
           ],
         ),
