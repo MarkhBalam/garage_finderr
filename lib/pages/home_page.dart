@@ -424,7 +424,7 @@ class QuickAccessButtons extends StatelessWidget {
           width: screenWidth,
           imagePath: 'lib/images/trial_form.jpg',
           label:
-              'Fill the Problem Description form first to locate a suitable garage',
+              'Fill the Car Problem Description form first to locate the nearest a suitable garage',
           onPressed: () {
             Navigator.push(
               context,
