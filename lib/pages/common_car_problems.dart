@@ -65,11 +65,6 @@ class CommonCarProblemsPage extends StatelessWidget {
                 onTap: () => _navigateTo(context, HeadlightPage()),
               ),
               ProblemTile(
-                title: 'Clean Battery Terminals',
-                subtitle: 'Instructions for cleaning battery terminals.',
-                onTap: () => _navigateTo(context, DeadBatteryPage()),
-              ),
-              ProblemTile(
                 title: 'Check Tire Pressure',
                 subtitle:
                     'Instructions for checking and adjusting tire pressure.',
