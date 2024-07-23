@@ -447,17 +447,6 @@ class QuickAccessButtons extends StatelessWidget {
         ),
         QuickAccessButton(
           width: screenWidth,
-          imagePath: 'lib/images/undercar.jpg',
-          label: 'Locate Nearby Garages',
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MapPage()),
-            );
-          },
-        ),
-        QuickAccessButton(
-          width: screenWidth,
           imagePath: 'lib/images/common.jpg',
           label: 'Common Car Problems and Solutions',
           onPressed: () {
