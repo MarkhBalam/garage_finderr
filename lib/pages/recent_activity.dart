@@ -33,50 +33,64 @@ class RecentActivityPage extends StatelessWidget {
         centerTitle: true,
         elevation: 5,
       ),
-      body: ListView.builder(
-        itemCount: recentActivities.length,
-        itemBuilder: (context, index) {
-          final activity = recentActivities[index];
-          return Card(
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            elevation: 5,
-            child: Padding(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    activity['title'] ?? 'No title',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey[800],
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    activity['description'] ?? 'No description',
-                    style: TextStyle(fontSize: 16, color: Colors.blueGrey[600]),
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'lib/images/recent.jpg'), // Path to your background image
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          ListView.builder(
+            itemCount: recentActivities.length,
+            itemBuilder: (context, index) {
+              final activity = recentActivities[index];
+              return Card(
+                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                elevation: 5,
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.access_time, size: 16, color: Colors.grey),
-                      SizedBox(width: 5),
                       Text(
-                        activity['timestamp'] ?? 'No timestamp',
-                        style: TextStyle(color: Colors.grey),
+                        activity['title'] ?? 'No title',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueGrey[800],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        activity['description'] ?? 'No description',
+                        style: TextStyle(
+                            fontSize: 16, color: Colors.blueGrey[600]),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.access_time, size: 16, color: Colors.grey),
+                          SizedBox(width: 5),
+                          Text(
+                            activity['timestamp'] ?? 'No timestamp',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-          );
-        },
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
