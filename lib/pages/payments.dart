@@ -1,23 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Flutter Payment Example'),
-        ),
-        body: PaymentPage(),
-      ),
-    );
-  }
-}
-
 class PaymentPage extends StatefulWidget {
   static route() => MaterialPageRoute(builder: (context) => PaymentPage());
 
@@ -39,15 +21,22 @@ class _PaymentPageState extends State<PaymentPage> {
         backgroundColor: Colors.blue,
       ),
       body: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('lib/images/payment.jpg'), // Background image
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
-            _buildPaymentOption('Mobile Money', Icons.phone_android,  Colors.blue),
+            _buildPaymentOption(
+                'Mobile Money', Icons.phone_android, Colors.blue),
             Spacer(),
-            _buildPaymentOption('Cash', Icons.attach_money, Colors.blue),
+            _buildPaymentOption('Cash', Icons.attach_money, Colors.green),
             Spacer(),
-            _buildPaymentOption('Credit/Debit Card', Icons.credit_card,  Colors.blue),
+            _buildPaymentOption(
+                'Credit/Debit Card', Icons.credit_card, Colors.orange),
           ],
         ),
       ),
@@ -55,44 +44,57 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   Widget _buildPaymentOption(String method, IconData icon, Color color) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-      child: ListTile(
-        leading: Icon(icon, color: color),
-        title: Text(
-          method,
-          style: TextStyle(color: Colors.blue),
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedPaymentMethod = method;
+          if (method == 'Mobile Money') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MobileMoneyPage()),
+            );
+          }
+        });
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8.0),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6.0,
+              offset: Offset(0, 3),
+            ),
+          ],
         ),
-        trailing: Radio<String>(
-          value: method,
-          groupValue: _selectedPaymentMethod,
-          onChanged: (value) {
-            setState(() {
-              _selectedPaymentMethod = value!;
-              if (method == 'Mobile Money') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MobileMoneyPage()),
-                );
-              }
-            });
-          },
+        child: ListTile(
+          leading: Icon(icon, color: color, size: 30),
+          title: Text(
+            method,
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          trailing: Radio<String>(
+            value: method,
+            groupValue: _selectedPaymentMethod,
+            onChanged: (value) {
+              setState(() {
+                _selectedPaymentMethod = value!;
+                if (method == 'Mobile Money') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MobileMoneyPage()),
+                  );
+                }
+              });
+            },
+          ),
         ),
-        onTap: () {
-          setState(() {
-            _selectedPaymentMethod = method;
-            if (method == 'Mobile Money') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MobileMoneyPage()),
-              );
-            }
-          });
-        },
       ),
     );
   }
@@ -124,31 +126,80 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Select Mobile Money Operator'),
+        backgroundColor: Colors.blue,
       ),
-      body: Column(
-        children: <Widget>[
-          _buildOperatorOption('Airtel'),
-          _buildOperatorOption('MTN'),
-          ElevatedButton(
-            onPressed: _handlePayment,
-            child: Text('Pay'),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('lib/images/payment.jpg'), // Background image
+            fit: BoxFit.cover,
           ),
-        ],
+        ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            SizedBox(height: 20),
+            _buildOperatorOption('Airtel', Colors.red),
+            _buildOperatorOption('MTN', Colors.yellow),
+            Spacer(),
+            ElevatedButton(
+              onPressed: _handlePayment,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding: EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+              ),
+              child: Text('Pay', style: TextStyle(fontSize: 18)),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildOperatorOption(String operator) {
-    return ListTile(
-      title: Text(operator),
-      leading: Radio<String>(
-        value: operator,
-        groupValue: _selectedOperator,
-        onChanged: (value) {
-          setState(() {
-            _selectedOperator = value!;
-          });
-        },
+  Widget _buildOperatorOption(String operator, Color color) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedOperator = operator;
+        });
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8.0),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6.0,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: ListTile(
+          leading: Icon(Icons.radio_button_checked, color: color),
+          title: Text(
+            operator,
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          trailing: Radio<String>(
+            value: operator,
+            groupValue: _selectedOperator,
+            onChanged: (value) {
+              setState(() {
+                _selectedOperator = value!;
+              });
+            },
+          ),
+        ),
       ),
     );
   }
