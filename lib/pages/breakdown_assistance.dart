@@ -10,14 +10,34 @@ class BreakdownAssistancePage extends StatefulWidget {
 
 class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _carModelController = TextEditingController();
+  String? _selectedBrand;
+  String? _selectedCarModel;
   String? _carSize;
   File? _selectedImage;
   bool _isLoading = false;
 
+  // Map of car brands and their models
+  final Map<String, List<String>> _carModelsByBrand = {
+    'Toyota': ['Camry', 'Corolla', 'Prius', 'RAV4', 'Highlander'],
+    'Honda': ['Accord', 'Civic', 'CR-V', 'Pilot', 'Fit'],
+    'Ford': ['F-150', 'Mustang', 'Explorer', 'Fusion', 'Escape'],
+    'Chevrolet': ['Silverado', 'Malibu', 'Equinox', 'Tahoe', 'Impala'],
+    'Nissan': ['Altima', 'Sentra', 'Rogue', 'Pathfinder', 'Maxima'],
+    'Hyundai': ['Elantra', 'Sonata', 'Tucson', 'Santa Fe', 'Kona'],
+    'BMW': ['3 Series', '5 Series', 'X3', 'X5', '7 Series'],
+    'Mercedes-Benz': ['C-Class', 'E-Class', 'S-Class', 'GLC', 'GLE'],
+    'Audi': ['A4', 'A6', 'Q5', 'Q7', 'A3'],
+    'Volkswagen': ['Jetta', 'Passat', 'Golf', 'Tiguan', 'Atlas'],
+    'Subaru': ['Outback', 'Forester', 'Impreza', 'Crosstrek', 'Legacy'],
+    'Mazda': ['Mazda3', 'Mazda6', 'CX-5', 'CX-9', 'MX-5 Miata'],
+    'Kia': ['Optima', 'Soul', 'Sorento', 'Sportage', 'Forte'],
+    'Tesla': ['Model S', 'Model 3', 'Model X', 'Model Y'],
+  };
+
+  List<String> _availableModels = [];
+
   @override
   void dispose() {
-    _carModelController.dispose();
     super.dispose();
   }
 
@@ -49,8 +69,9 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
         );
 
         // Clear the form fields
-        _carModelController.clear();
         setState(() {
+          _selectedBrand = null;
+          _selectedCarModel = null;
           _carSize = null;
           _selectedImage = null;
         });
@@ -101,8 +122,37 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blueGrey[800])),
                           SizedBox(height: 16),
-                          TextFormField(
-                            controller: _carModelController,
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: 'Car Brand',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              filled: true,
+                              fillColor: Colors.blueGrey[50],
+                            ),
+                            value: _selectedBrand,
+                            items: _carModelsByBrand.keys.map((brand) {
+                              return DropdownMenuItem<String>(
+                                value: brand,
+                                child: Text(brand),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedBrand = newValue;
+                                _availableModels = _carModelsByBrand[newValue]!;
+                                _selectedCarModel = null;
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please select your car brand';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: 16),
+                          DropdownButtonFormField<String>(
                             decoration: InputDecoration(
                               labelText: 'Car Model',
                               border: OutlineInputBorder(
@@ -110,9 +160,21 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
                               filled: true,
                               fillColor: Colors.blueGrey[50],
                             ),
+                            value: _selectedCarModel,
+                            items: _availableModels.map((model) {
+                              return DropdownMenuItem<String>(
+                                value: model,
+                                child: Text(model),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedCarModel = newValue;
+                              });
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your car model';
+                                return 'Please select your car model';
                               }
                               return null;
                             },
