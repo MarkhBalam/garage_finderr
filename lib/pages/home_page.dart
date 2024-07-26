@@ -12,6 +12,26 @@ const Color secondaryColor = Colors.white;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('HomePage'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: (){
+  
+Navigator.pushNamed(context, 'garage_finder/lib/pages/rating_page.dart');
+
+            
+          }, child: const Text('garage_finder/lib/pages/rating_page.dart'),
+      ),
+    ),
+    );
+    // TODO: implement ==
+    //return super == other;
+  }
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -590,3 +610,4 @@ class UserAccountAndWallet extends StatelessWidget {
     );
   }
 }
+//class home_page extends StatelessWidget
