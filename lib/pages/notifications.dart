@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Flutter Notification Example'),
+          title: Text('Garage Finder'),
         ),
         body: NotificationPage(),
       ),
@@ -33,10 +33,12 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationPageState extends State<NotificationPage> {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  String _notificationText = 'No notifications yet';
 
   @override
   void initState() {
     super.initState();
+
     _firebaseMessaging.requestPermission(
       sound: true,
       badge: true,
@@ -50,6 +52,9 @@ class _NotificationPageState extends State<NotificationPage> {
 
       if (message.notification != null) {
         print('Message also contained a notification: ${message.notification}');
+        setState(() {
+          _notificationText = message.notification!.title ?? 'No Title';
+        });
       }
     });
 
@@ -63,7 +68,7 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'Flutter Notification Example',
+        _notificationText,
         style: TextStyle(fontSize: 20.0),
       ),
     );
