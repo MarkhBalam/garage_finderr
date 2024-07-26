@@ -13,6 +13,7 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
   String? _selectedBrand;
   String? _selectedCarModel;
   String? _carSize;
+  String? _manualCarModel;
   File? _selectedImage;
   bool _isLoading = false;
 
@@ -72,6 +73,7 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
         setState(() {
           _selectedBrand = null;
           _selectedCarModel = null;
+          _manualCarModel = null;
           _carSize = null;
           _selectedImage = null;
         });
@@ -142,6 +144,7 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
                                 _selectedBrand = newValue;
                                 _availableModels = _carModelsByBrand[newValue]!;
                                 _selectedCarModel = null;
+                                _manualCarModel = null; // Reset manual input
                               });
                             },
                             validator: (value) {
@@ -166,10 +169,15 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
                                 value: model,
                                 child: Text(model),
                               );
-                            }).toList(),
+                            }).toList()
+                              ..add(DropdownMenuItem<String>(
+                                value: 'Other',
+                                child: Text('Other'),
+                              )),
                             onChanged: (newValue) {
                               setState(() {
                                 _selectedCarModel = newValue;
+                                _manualCarModel = null;
                               });
                             },
                             validator: (value) {
@@ -179,6 +187,28 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
                               return null;
                             },
                           ),
+                          if (_selectedCarModel == 'Other') ...[
+                            SizedBox(height: 16),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'Enter Car Model',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                filled: true,
+                                fillColor: Colors.blueGrey[50],
+                              ),
+                              onChanged: (value) {
+                                _manualCarModel = value;
+                              },
+                              validator: (value) {
+                                if (_selectedCarModel == 'Other' &&
+                                    (value == null || value.isEmpty)) {
+                                  return 'Please enter your car model';
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
                           SizedBox(height: 16),
                           DropdownButtonFormField<String>(
                             decoration: InputDecoration(
