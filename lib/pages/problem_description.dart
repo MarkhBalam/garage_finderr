@@ -14,16 +14,36 @@ class ProblemDescriptionFormPage extends StatefulWidget {
 class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _problemController = TextEditingController();
-  final TextEditingController _carModelController = TextEditingController();
   final TextEditingController _contactNumberController =
       TextEditingController();
   File? _selectedImage;
   bool _isLoading = false;
 
+  // Map of car brands and their models
+  final Map<String, List<String>> _carModelsByBrand = {
+    'Toyota': ['Camry', 'Corolla', 'Prius', 'RAV4', 'Highlander'],
+    'Honda': ['Accord', 'Civic', 'CR-V', 'Pilot', 'Fit'],
+    'Ford': ['F-150', 'Mustang', 'Explorer', 'Fusion', 'Escape'],
+    'Chevrolet': ['Silverado', 'Malibu', 'Equinox', 'Tahoe', 'Impala'],
+    'Nissan': ['Altima', 'Sentra', 'Rogue', 'Pathfinder', 'Maxima'],
+    'Hyundai': ['Elantra', 'Sonata', 'Tucson', 'Santa Fe', 'Kona'],
+    'BMW': ['3 Series', '5 Series', 'X3', 'X5', '7 Series'],
+    'Mercedes-Benz': ['C-Class', 'E-Class', 'S-Class', 'GLC', 'GLE'],
+    'Audi': ['A4', 'A6', 'Q5', 'Q7', 'A3'],
+    'Volkswagen': ['Jetta', 'Passat', 'Golf', 'Tiguan', 'Atlas'],
+    'Subaru': ['Outback', 'Forester', 'Impreza', 'Crosstrek', 'Legacy'],
+    'Mazda': ['Mazda3', 'Mazda6', 'CX-5', 'CX-9', 'MX-5 Miata'],
+    'Kia': ['Optima', 'Soul', 'Sorento', 'Sportage', 'Forte'],
+    'Tesla': ['Model S', 'Model 3', 'Model X', 'Model Y'],
+  };
+
+  String? _selectedBrand;
+  String? _selectedCarModel;
+  List<String> _availableModels = [];
+
   @override
   void dispose() {
     _problemController.dispose();
-    _carModelController.dispose();
     _contactNumberController.dispose();
     super.dispose();
   }
@@ -60,7 +80,7 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
       });
 
       final problemDescription = _problemController.text;
-      final carModel = _carModelController.text;
+      final carModel = _selectedBrand! + ' ' + _selectedCarModel!;
       final contactNumber = _contactNumberController.text;
 
       String? imageUrl;
@@ -81,7 +101,6 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
       });
 
       _problemController.clear();
-      _carModelController.clear();
       _contactNumberController.clear();
       setState(() {
         _selectedImage = null;
@@ -129,7 +148,8 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
           Center(
             child: Card(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
+                borderRadius: BorderRadius.circular(15),
+              ),
               elevation: 8,
               margin: EdgeInsets.all(20),
               child: Padding(
@@ -163,8 +183,37 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
                           },
                         ),
                         const SizedBox(height: 13),
-                        TextFormField(
-                          controller: _carModelController,
+                        DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            labelText: 'Car Brand',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            filled: true,
+                            fillColor: Colors.blueGrey[50],
+                          ),
+                          value: _selectedBrand,
+                          items: _carModelsByBrand.keys.map((brand) {
+                            return DropdownMenuItem<String>(
+                              value: brand,
+                              child: Text(brand),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedBrand = newValue;
+                              _availableModels = _carModelsByBrand[newValue]!;
+                              _selectedCarModel = null;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select your car brand';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 13),
+                        DropdownButtonFormField<String>(
                           decoration: InputDecoration(
                             labelText: 'Car Model',
                             border: OutlineInputBorder(
@@ -172,9 +221,21 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
                             filled: true,
                             fillColor: Colors.blueGrey[50],
                           ),
+                          value: _selectedCarModel,
+                          items: _availableModels.map((model) {
+                            return DropdownMenuItem<String>(
+                              value: model,
+                              child: Text(model),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedCarModel = newValue;
+                            });
+                          },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter the model of your car';
+                              return 'Please select your car model';
                             }
                             return null;
                           },

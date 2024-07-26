@@ -537,27 +537,122 @@ class QuickAccessButton extends StatelessWidget {
   }
 }
 
+class RecentActivityPage extends StatelessWidget {
+  static Route<dynamic> route() {
+    return MaterialPageRoute(builder: (context) => RecentActivityPage());
+  }
+
+  final List<Map<String, String>> recentActivities = [
+    {
+      'title': 'Requested Tow Service',
+      'description':
+          'Requested a tow service for a flat tire on July 20, 2024.',
+      'timestamp': '2024-07-20 14:30'
+    },
+    {
+      'title': 'Booked Garage Appointment',
+      'description': 'Booked an appointment at XYZ Garage for oil change.',
+      'timestamp': '2024-07-18 10:00'
+    },
+    {
+      'title': 'Requested Breakdown Assistance',
+      'description': 'Requested breakdown assistance for engine overheating.',
+      'timestamp': '2024-07-15 08:45'
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: primaryColor,
+        title: Text('Recent Activity'),
+        centerTitle: true,
+        elevation: 5,
+      ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'lib/images/recent.jpg'), // Path to your background image
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          ListView.builder(
+            itemCount: recentActivities.length,
+            itemBuilder: (context, index) {
+              final activity = recentActivities[index];
+              return Card(
+                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                elevation: 5,
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        activity['title'] ?? 'No title',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueGrey[800],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        activity['description'] ?? 'No description',
+                        style: TextStyle(
+                            fontSize: 16, color: Colors.blueGrey[600]),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.access_time, size: 16, color: Colors.grey),
+                          SizedBox(width: 5),
+                          Text(
+                            activity['timestamp'] ?? 'No timestamp',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class RecentActivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to RecentActivityPage when the card is tapped
         Navigator.push(
           context,
-          RecentActivityPage
-              .route(), // Use the named route to navigate to RecentActivityPage
+          RecentActivityPage.route(),
         );
       },
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 8,
+        shadowColor: Colors.black45,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.history, color: primaryColor, size: 30),
+              Icon(Icons.history, color: primaryColor, size: 40),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -565,11 +660,12 @@ class RecentActivity extends StatelessWidget {
                   children: [
                     Text('Recent Activity',
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.black)),
                     const SizedBox(height: 5),
-                    // List of recent activities
+                    Text('Check your recent activities here.',
+                        style: TextStyle(fontSize: 16, color: Colors.black54)),
                   ],
                 ),
               ),
@@ -592,14 +688,15 @@ class Notifications extends StatelessWidget {
         );
       },
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 8,
+        shadowColor: Colors.black45,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.notifications, color: primaryColor, size: 30),
+              Icon(Icons.notifications, color: primaryColor, size: 40),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -607,11 +704,12 @@ class Notifications extends StatelessWidget {
                   children: [
                     Text('Notifications',
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.black)),
                     const SizedBox(height: 5),
-                    // List of notifications
+                    Text('Check your notifications here.',
+                        style: TextStyle(fontSize: 16, color: Colors.black54)),
                   ],
                 ),
               ),
@@ -628,22 +726,21 @@ class SupportAndFeedback extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to SupportAndFeedbackPage when the card is tapped
         Navigator.push(
           context,
-          SupportAndFeedbackPage
-              .route(), // Use the named route to navigate to SupportAndFeedbackPage
+          SupportAndFeedbackPage.route(),
         );
       },
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 8,
+        shadowColor: Colors.black45,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.support_agent, color: primaryColor, size: 30),
+              Icon(Icons.support_agent, color: primaryColor, size: 40),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -651,11 +748,12 @@ class SupportAndFeedback extends StatelessWidget {
                   children: [
                     Text('Support and Feedback',
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.black)),
                     const SizedBox(height: 5),
-                    // Support and feedback options
+                    Text('Get support and provide feedback.',
+                        style: TextStyle(fontSize: 16, color: Colors.black54)),
                   ],
                 ),
               ),
@@ -672,21 +770,21 @@ class UserAccountAndWallet extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to PaymentPage when the card is tapped
         Navigator.push(
           context,
-          PaymentPage.route(), // Use the named route to navigate to PaymentPage
+          PaymentPage.route(),
         );
       },
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 8,
+        shadowColor: Colors.black45,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.account_balance_wallet, color: primaryColor, size: 30),
+              Icon(Icons.account_balance_wallet, color: primaryColor, size: 40),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -694,11 +792,12 @@ class UserAccountAndWallet extends StatelessWidget {
                   children: [
                     Text('Payments',
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.black)),
                     const SizedBox(height: 5),
-                    // User account and wallet details
+                    Text('Manage your payments here.',
+                        style: TextStyle(fontSize: 16, color: Colors.black54)),
                   ],
                 ),
               ),
