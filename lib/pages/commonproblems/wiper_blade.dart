@@ -8,44 +8,79 @@ class WiperBladePage extends StatelessWidget {
         title: Text('How to Replace Wiper Blades'),
         backgroundColor: Colors.blue,
       ),
-      body: Padding(
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'lib/images/wiper_blade.jpg'), // Path to your background image
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Semi-transparent overlay
+          Container(
+            color: Colors.black.withOpacity(0.5),
+          ),
+          // Main content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
+              children: [
+                _buildInstructionCard(
+                  '1. Lift the Wiper Blade Arm:',
+                  'Pull the wiper blade arm away from the windshield.',
+                ),
+                _buildInstructionCard(
+                  '2. Remove the Old Wiper Blade:',
+                  'Press the release tab and slide the wiper blade off.',
+                ),
+                _buildInstructionCard(
+                  '3. Attach the New Wiper Blade:',
+                  'Slide the new blade onto the arm until it clicks into place.',
+                ),
+                _buildInstructionCard(
+                  '4. Test the New Wiper Blade:',
+                  'Turn on the wipers to ensure they work correctly.',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInstructionCard(String title, String description) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 5,
+      color: Colors.white.withOpacity(0.8),
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '1. Lift the Wiper Blade Arm:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.blue,
+              ),
             ),
+            SizedBox(height: 5),
             Text(
-              '   Pull the wiper blade arm away from the windshield.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '2. Remove the Old Wiper Blade:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Press the release tab and slide the wiper blade off.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '3. Attach the New Wiper Blade:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Slide the new blade onto the arm until it clicks into place.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '4. Test the New Wiper Blade:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Turn on the wipers to ensure they work correctly.',
-              style: TextStyle(fontSize: 16),
+              description,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
             ),
           ],
         ),

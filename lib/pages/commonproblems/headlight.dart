@@ -8,62 +8,87 @@ class HeadlightPage extends StatelessWidget {
         title: Text('How to Replace Headlights'),
         backgroundColor: Colors.blue,
       ),
-      body: Padding(
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'lib/images/headlight1.jpg'), // Path to your background image
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Semi-transparent overlay
+          Container(
+            color: Colors.black.withOpacity(0.5),
+          ),
+          // Main content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
+              children: [
+                _buildInstructionCard(
+                  '1. Open the Hood:',
+                  'Locate the headlight assembly under the hood.',
+                ),
+                _buildInstructionCard(
+                  '2. Remove the Headlight Assembly:',
+                  'Unscrew or unclamp the headlight assembly from the vehicle.',
+                ),
+                _buildInstructionCard(
+                  '3. Remove the Old Headlight Bulb:',
+                  'Twist the bulb out of the socket.',
+                ),
+                _buildInstructionCard(
+                  '4. Insert the New Headlight Bulb:',
+                  'Place the new bulb into the socket and twist to secure.',
+                ),
+                _buildInstructionCard(
+                  '5. Reinstall the Headlight Assembly:',
+                  'Reattach the headlight assembly to the vehicle.',
+                ),
+                _buildInstructionCard(
+                  '6. Test the Headlights:',
+                  'Turn on the headlights to make sure they are working.',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInstructionCard(String title, String description) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 5,
+      color: Colors.white.withOpacity(0.8),
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '1. Open the Hood:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.blue,
+              ),
             ),
+            SizedBox(height: 5),
             Text(
-              '   Locate the headlight assembly under the hood.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '2. Remove the Headlight Assembly:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Unscrew or unclamp the headlight assembly from the vehicle.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '3. Remove the Old Headlight Bulb:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Twist the bulb out of the socket.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '4. Insert the New Headlight Bulb:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Place the new bulb into the socket and twist to secure.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '5. Reinstall the Headlight Assembly:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Reattach the headlight assembly to the vehicle.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '6. Test the Headlights:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Turn on the headlights to make sure they are working.',
-              style: TextStyle(fontSize: 16),
+              description,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
             ),
           ],
         ),

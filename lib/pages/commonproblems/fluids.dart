@@ -8,44 +8,79 @@ class FluidsPage extends StatelessWidget {
         title: Text('How to Check and Top Up Fluids'),
         backgroundColor: Colors.blue,
       ),
-      body: Padding(
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'lib/images/common.jpg'), // Path to your background image
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Semi-transparent overlay
+          Container(
+            color: Colors.black.withOpacity(0.5),
+          ),
+          // Main content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
+              children: [
+                _buildInstructionCard(
+                  '1. Locate the Fluid Reservoirs:',
+                  'Find the reservoirs for oil, coolant, brake fluid, and windshield washer fluid.',
+                ),
+                _buildInstructionCard(
+                  '2. Check Fluid Levels:',
+                  'Use the dipstick for oil and check the level against the markings.',
+                ),
+                _buildInstructionCard(
+                  '3. Top Up Fluids:',
+                  'Add fluids as needed, following the recommendations in your owner’s manual.',
+                ),
+                _buildInstructionCard(
+                  '4. Check for Leaks:',
+                  'Look under the car for any signs of leaks.',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInstructionCard(String title, String description) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 5,
+      color: Colors.white.withOpacity(0.8),
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '1. Locate the Fluid Reservoirs:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.blue,
+              ),
             ),
+            SizedBox(height: 5),
             Text(
-              '   Find the reservoirs for oil, coolant, brake fluid, and windshield washer fluid.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '2. Check Fluid Levels:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Use the dipstick for oil and check the level against the markings.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '3. Top Up Fluids:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Add fluids as needed, following the recommendations in your owner’s manual.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '4. Check for Leaks:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Look under the car for any signs of leaks.',
-              style: TextStyle(fontSize: 16),
+              description,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
             ),
           ],
         ),

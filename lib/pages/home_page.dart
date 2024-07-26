@@ -5,6 +5,15 @@ import "package:garage_finder/pages/notifications.dart";
 import "package:garage_finder/pages/payments.dart";
 import 'package:garage_finder/pages/common_car_problems.dart';
 import 'package:garage_finder/pages/map_pages.dart';
+import "package:garage_finder/pages/breakdown_assistance.dart";
+import "package:garage_finder/pages/recent_activity.dart";
+import "package:garage_finder/pages/support_and_feedback.dart";
+import "package:garage_finder/pages/about_us.dart";
+import "package:garage_finder/pages/contact_us.dart";
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:garage_finder/pages/problem_description.dart';
 
 // Define a color palette
 const Color primaryColor = Colors.blue;
@@ -81,6 +90,48 @@ class _HomePageState extends State<HomePage> {
           child: const Text('Garage Finder',
               style: TextStyle(color: secondaryColor)),
         ),
+        actions: [
+          Stack(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.notifications,
+                  size: 30.0,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NotificationPage()),
+                  );
+                },
+              ),
+              Positioned(
+                right: 11,
+                top: 11,
+                child: Container(
+                  padding: EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  constraints: BoxConstraints(
+                    minWidth: 14,
+                    minHeight: 14,
+                  ),
+                  child: Text(
+                    '0', // Replace '0' with the actual count
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 8,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ],
       ),
       body: IndexedStack(
         index: _selectedIndex,
@@ -134,13 +185,10 @@ class HomeContent extends StatelessWidget {
       children: [
         WelcomeBanner(userName: userName ?? 'User'),
         const SizedBox(height: 16),
-        SearchBar(),
         const SizedBox(height: 16),
         QuickAccessButtons(),
         const SizedBox(height: 16),
         RecentActivity(),
-        const SizedBox(height: 16),
-        Notifications(),
         const SizedBox(height: 16),
         SupportAndFeedback(),
         const SizedBox(height: 16),
@@ -253,30 +301,40 @@ class UserDetailsCard extends StatelessWidget {
 class AboutUsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      elevation: 10,
-      shadowColor: Colors.black.withOpacity(0.2),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Row(
-          children: [
-            Icon(Icons.info_outline, color: primaryColor, size: 40),
-            const SizedBox(width: 24),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('About Us',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  const SizedBox(height: 5),
-                ],
+    return GestureDetector(
+      onTap: () {
+        // Navigate to AboutUsPage when the card is tapped
+        Navigator.push(
+          context,
+          AboutUsPage.route(), // Use the named route to navigate to AboutUsPage
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        elevation: 10,
+        shadowColor: Colors.black.withOpacity(0.2),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            children: [
+              Icon(Icons.info_outline, color: primaryColor, size: 40),
+              const SizedBox(width: 24),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('About Us',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    const SizedBox(height: 5),
+                    // About us details
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -286,30 +344,41 @@ class AboutUsSection extends StatelessWidget {
 class ContactUsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      elevation: 10,
-      shadowColor: Colors.black.withOpacity(0.2),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Row(
-          children: [
-            Icon(Icons.contact_mail, color: primaryColor, size: 40),
-            const SizedBox(width: 24),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Contact Us',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  const SizedBox(height: 5),
-                ],
+    return GestureDetector(
+      onTap: () {
+        // Navigate to ContactUsPage when the card is tapped
+        Navigator.push(
+          context,
+          ContactUsPage
+              .route(), // Use the named route to navigate to ContactUsPage
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        elevation: 10,
+        shadowColor: Colors.black.withOpacity(0.2),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            children: [
+              Icon(Icons.contact_mail, color: primaryColor, size: 40),
+              const SizedBox(width: 24),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Contact Us',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    const SizedBox(height: 5),
+                    // Contact us details
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -363,94 +432,124 @@ class WelcomeBanner extends StatelessWidget {
   }
 }
 
-class SearchBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(
-        hintText: 'Search for garages...',
-        prefixIcon: Icon(Icons.search, color: primaryColor),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        filled: true,
-        fillColor: secondaryColor,
-      ),
-    );
-  }
-}
-
 class QuickAccessButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         QuickAccessButton(
-            icon: Icons.garage,
-            label: 'Nearby\n Garages',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MapPage()),
-              );
-            }),
+          width: screenWidth,
+          imagePath: 'lib/images/trial_form.jpg',
+          label:
+              'Fill the Car Problem Description form first to locate the nearest a suitable garage',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProblemDescriptionFormPage()),
+            );
+          },
+        ),
         QuickAccessButton(
-            icon: Icons.build,
-            label: 'Breakdown\n Assistance',
-            onPressed: () {
-              // Navigate to Breakdown Assistance page
-            }),
+          width: screenWidth,
+          imagePath: 'lib/images/c.jpg',
+          label: 'Breakdown Assistance',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BreakdownAssistancePage()),
+            );
+          },
+        ),
         QuickAccessButton(
-            icon: Icons.report_problem,
-            label: 'Common Car\n Problems',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CommonCarProblemsPage()),
-              );
-            }),
+          width: screenWidth,
+          imagePath: 'lib/images/common.jpg',
+          label: 'Common Car Problems and Solutions',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CommonCarProblemsPage()),
+            );
+          },
+        ),
       ],
     );
   }
 }
 
 class QuickAccessButton extends StatelessWidget {
-  final IconData icon;
+  final double width;
+  final String imagePath;
   final String label;
   final VoidCallback onPressed;
 
-  const QuickAccessButton(
-      {required this.icon,
-      required this.label,
-      required this.onPressed,
-      Key? key})
-      : super(key: key);
+  const QuickAccessButton({
+    required this.width,
+    required this.imagePath,
+    required this.label,
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: width * 0.9, // Adjust width for better spacing
+        margin: const EdgeInsets.symmetric(
+            vertical: 12), // Increased vertical margin
+        padding: const EdgeInsets.all(0), // Removed padding
+        decoration: BoxDecoration(
+          borderRadius:
+              BorderRadius.circular(15), // Larger radius for rounded corners
+          gradient: LinearGradient(
+            colors: [
+              Colors.blueAccent,
+              Colors.lightBlue
+            ], // Gradient background
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blue.withOpacity(0.4),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
         child: Column(
           children: [
             Container(
-              decoration: BoxDecoration(
-                color: primaryColor.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                icon: Icon(icon, size: 38, color: primaryColor),
-                onPressed: onPressed,
+              padding: const EdgeInsets.all(12), // Padding for text container
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white, // White text for contrast
+                  fontSize: 18, // Slightly larger font size
+                  fontWeight: FontWeight.bold, // Bold text for emphasis
+                ),
               ),
             ),
-            SizedBox(height: 8),
-            Text(label, style: TextStyle(color: Colors.black)),
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(15),
+                bottomRight: Radius.circular(15),
+              ), // Rounded bottom corners for the image
+              child: Image.asset(
+                imagePath,
+                width: double.infinity,
+                height: 200, // Height for larger images
+                fit: BoxFit.cover,
+              ),
+            ),
           ],
         ),
       ),
@@ -461,31 +560,41 @@ class QuickAccessButton extends StatelessWidget {
 class RecentActivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.history, color: primaryColor, size: 30),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Recent Activity',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  const SizedBox(height: 5),
-                  // List of recent activities
-                ],
+    return GestureDetector(
+      onTap: () {
+        // Navigate to RecentActivityPage when the card is tapped
+        Navigator.push(
+          context,
+          RecentActivityPage
+              .route(), // Use the named route to navigate to RecentActivityPage
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.history, color: primaryColor, size: 30),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Recent Activity',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    const SizedBox(height: 5),
+                    // List of recent activities
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -537,31 +646,41 @@ class Notifications extends StatelessWidget {
 class SupportAndFeedback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.support_agent, color: primaryColor, size: 30),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Support and Feedback',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black)),
-                  const SizedBox(height: 5),
-                  // Support and feedback options
-                ],
+    return GestureDetector(
+      onTap: () {
+        // Navigate to SupportAndFeedbackPage when the card is tapped
+        Navigator.push(
+          context,
+          SupportAndFeedbackPage
+              .route(), // Use the named route to navigate to SupportAndFeedbackPage
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.support_agent, color: primaryColor, size: 30),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Support and Feedback',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                    const SizedBox(height: 5),
+                    // Support and feedback options
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -593,7 +712,7 @@ class UserAccountAndWallet extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Account and Wallet',
+                    Text('Payments',
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

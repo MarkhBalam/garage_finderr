@@ -8,53 +8,83 @@ class HeadlightsAdjustmentPage extends StatelessWidget {
         title: Text('How to Adjust Headlights'),
         backgroundColor: Colors.blue,
       ),
-      body: Padding(
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'lib/images/headlight1.jpg'), // Path to your background image
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Semi-transparent overlay
+          Container(
+            color: Colors.black.withOpacity(0.5),
+          ),
+          // Main content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
+              children: [
+                _buildInstructionCard(
+                  '1. Park on a Level Surface:',
+                  'Find a flat and level surface to adjust your headlights.',
+                ),
+                _buildInstructionCard(
+                  '2. Position the Car:',
+                  'Park the car facing a wall or garage door about 10-15 feet away.',
+                ),
+                _buildInstructionCard(
+                  '3. Check Headlight Alignment:',
+                  'Check the beam pattern on the wall and see if it needs adjustment.',
+                ),
+                _buildInstructionCard(
+                  '4. Adjust the Headlights:',
+                  'Use the adjustment screws to align the headlights properly.',
+                ),
+                _buildInstructionCard(
+                  '5. Test the Headlights:',
+                  'Turn on the headlights and check the alignment.',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInstructionCard(String title, String description) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 5,
+      color: Colors.white.withOpacity(0.8),
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '1. Park on a Level Surface:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.blue,
+              ),
             ),
+            SizedBox(height: 5),
             Text(
-              '   Find a flat and level surface to adjust your headlights.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '2. Position the Car:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Park the car facing a wall or garage door about 10-15 feet away.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '3. Check Headlight Alignment:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Check the beam pattern on the wall and see if it needs adjustment.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '4. Adjust the Headlights:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Use the adjustment screws to align the headlights properly.',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '5. Test the Headlights:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Text(
-              '   Turn on the headlights and check the alignment.',
-              style: TextStyle(fontSize: 16),
+              description,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
             ),
           ],
         ),
