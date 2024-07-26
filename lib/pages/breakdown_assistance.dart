@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path/path.dart' as path;
 
 class BreakdownAssistancePage extends StatefulWidget {
   @override
@@ -18,7 +21,6 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
   File? _selectedImage;
   bool _isLoading = false;
 
-  // Map of car brands and their models
   final Map<String, List<String>> _carModelsByBrand = {
     'Toyota': ['Camry', 'Corolla', 'Prius', 'RAV4', 'Highlander'],
     'Honda': ['Accord', 'Civic', 'CR-V', 'Pilot', 'Fit'],
@@ -38,11 +40,6 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
 
   List<String> _availableModels = [];
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   Future<void> _pickImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -53,24 +50,39 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
     }
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() {
         _isLoading = true;
       });
 
-      // Simulate a network request or data submission
-      Future.delayed(Duration(seconds: 2), () {
-        setState(() {
-          _isLoading = false;
+      try {
+        String imagePath = '';
+        if (_selectedImage != null) {
+          String fileName = path.basename(_selectedImage!.path);
+          Reference storageReference = FirebaseStorage.instance
+              .ref()
+              .child('breakdown_images/$fileName');
+          UploadTask uploadTask = storageReference.putFile(_selectedImage!);
+          await uploadTask.whenComplete(() => null);
+          imagePath = await storageReference.getDownloadURL();
+        }
+
+        await FirebaseFirestore.instance.collection('breakdown').add({
+          'carBrand':
+              _selectedBrand == 'Other' ? _manualCarBrand : _selectedBrand,
+          'carModel': _selectedCarModel == 'Other'
+              ? _manualCarModel
+              : _selectedCarModel,
+          'carSize': _carSize,
+          'imagePath': imagePath,
+          'timestamp': Timestamp.now(),
         });
 
-        // Show a success message or navigate to another page
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Tow truck requested successfully!')),
         );
 
-        // Clear the form fields
         setState(() {
           _selectedBrand = null;
           _selectedCarModel = null;
@@ -79,7 +91,15 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
           _carSize = null;
           _selectedImage = null;
         });
-      });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to request tow truck: $e')),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -92,17 +112,14 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
       ),
       body: Stack(
         children: [
-          // Background image
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    'lib/images/c.jpg'), // Path to your background image
+                image: AssetImage('lib/images/c.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          // Main content
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView(
@@ -156,7 +173,7 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
                                 } else {
                                   _availableModels = [];
                                 }
-                                _manualCarModel = null; // Reset manual input
+                                _manualCarModel = null;
                               });
                             },
                             validator: (value) {
