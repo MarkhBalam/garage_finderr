@@ -13,6 +13,7 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
   String? _selectedBrand;
   String? _selectedCarModel;
   String? _carSize;
+  String? _manualCarBrand;
   String? _manualCarModel;
   File? _selectedImage;
   bool _isLoading = false;
@@ -73,6 +74,7 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
         setState(() {
           _selectedBrand = null;
           _selectedCarModel = null;
+          _manualCarBrand = null;
           _manualCarModel = null;
           _carSize = null;
           _selectedImage = null;
@@ -138,12 +140,22 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
                                 value: brand,
                                 child: Text(brand),
                               );
-                            }).toList(),
+                            }).toList()
+                              ..add(DropdownMenuItem<String>(
+                                value: 'Other',
+                                child: Text('Other'),
+                              )),
                             onChanged: (newValue) {
                               setState(() {
                                 _selectedBrand = newValue;
-                                _availableModels = _carModelsByBrand[newValue]!;
-                                _selectedCarModel = null;
+                                if (newValue != 'Other') {
+                                  _availableModels =
+                                      _carModelsByBrand[newValue]!;
+                                  _selectedCarModel = null;
+                                  _manualCarBrand = null;
+                                } else {
+                                  _availableModels = [];
+                                }
                                 _manualCarModel = null; // Reset manual input
                               });
                             },
@@ -154,6 +166,28 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
                               return null;
                             },
                           ),
+                          if (_selectedBrand == 'Other') ...[
+                            SizedBox(height: 16),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'Enter Car Brand',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                filled: true,
+                                fillColor: Colors.blueGrey[50],
+                              ),
+                              onChanged: (value) {
+                                _manualCarBrand = value;
+                              },
+                              validator: (value) {
+                                if (_selectedBrand == 'Other' &&
+                                    (value == null || value.isEmpty)) {
+                                  return 'Please enter your car brand';
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
                           SizedBox(height: 16),
                           DropdownButtonFormField<String>(
                             decoration: InputDecoration(
