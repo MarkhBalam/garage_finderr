@@ -560,6 +560,36 @@ class RecentActivityPage extends StatelessWidget {
     return MaterialPageRoute(builder: (context) => RecentActivityPage());
   }
 
+  Future<List<QueryDocumentSnapshot>> _fetchActivities() async {
+    final problemsQuery = FirebaseFirestore.instance
+        .collection('problems')
+        .orderBy('timestamp', descending: true)
+        .get();
+
+    final breakdownQuery = FirebaseFirestore.instance
+        .collection('breakdown')
+        .orderBy('timestamp', descending: true)
+        .get();
+
+    final problemsSnapshot = await problemsQuery;
+    final breakdownSnapshot = await breakdownQuery;
+
+    final combinedDocs = <QueryDocumentSnapshot>[];
+    combinedDocs.addAll(problemsSnapshot.docs);
+    combinedDocs.addAll(breakdownSnapshot.docs);
+
+    // Sort by timestamp
+    combinedDocs.sort((a, b) {
+      final aTimestamp =
+          (a.data() as Map<String, dynamic>)['timestamp'] as Timestamp?;
+      final bTimestamp =
+          (b.data() as Map<String, dynamic>)['timestamp'] as Timestamp?;
+      return bTimestamp?.compareTo(aTimestamp ?? Timestamp.now()) ?? 1;
+    });
+
+    return combinedDocs;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -569,113 +599,103 @@ class RecentActivityPage extends StatelessWidget {
         centerTitle: true,
         elevation: 5,
       ),
-      body: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                    'lib/images/recent.jpg'), // Path to your background image
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('problems')
-                .orderBy('timestamp', descending: true)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(child: CircularProgressIndicator());
-              }
+      body: FutureBuilder<List<QueryDocumentSnapshot>>(
+        future: _fetchActivities(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            return Center(child: CircularProgressIndicator());
+          }
 
-              final recentActivities = snapshot.data!.docs;
+          final recentActivities = snapshot.data!;
 
-              return ListView.builder(
-                itemCount: recentActivities.length,
-                itemBuilder: (context, index) {
-                  final activity = recentActivities[index];
-                  final data = activity.data() as Map<String, dynamic>;
+          return ListView.builder(
+            itemCount: recentActivities.length,
+            itemBuilder: (context, index) {
+              final activity = recentActivities[index];
+              final data = activity.data() as Map<String, dynamic>;
+              final isBreakdown = activity.reference.parent.id == 'breakdown';
 
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 5,
-                    child: Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              return Card(
+                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                elevation: 5,
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isBreakdown
+                            ? 'Requested a tow truck'
+                            : (data['problemDescription'] ?? 'No description'),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueGrey[800],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Car Brand: ${data['carBrand'] ?? 'No brand'}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.blueGrey[600],
+                        ),
+                      ),
+                      Text(
+                        'Car Model: ${data['carModel'] ?? 'No model'}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.blueGrey[600],
+                        ),
+                      ),
+                      if (isBreakdown)
+                        Text(
+                          'Car Size: ${data['carSize'] ?? 'No size'}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.blueGrey[600],
+                          ),
+                        ),
+                      SizedBox(height: 10),
+                      if (data['imagePath'] != null)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            data['imagePath'],
+                            height: 100,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          Icon(Icons.access_time, size: 16, color: Colors.grey),
+                          SizedBox(width: 5),
                           Text(
-                            data['problemDescription'] ?? 'No description',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blueGrey[800],
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'Car Brand: ${data['carBrand'] ?? 'No brand'}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.blueGrey[600],
-                            ),
-                          ),
-                          Text(
-                            'Car Model: ${data['carModel'] ?? 'No model'}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.blueGrey[600],
-                            ),
-                          ),
-                          Text(
-                            'Contact: ${data['contactNumber'] ?? 'No contact'}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.blueGrey[600],
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          if (data['imagePath'] != null)
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                data['imagePath'],
-                                height: 100,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Icon(Icons.access_time,
-                                  size: 16, color: Colors.grey),
-                              SizedBox(width: 5),
-                              Text(
-                                data['timestamp'] != null
-                                    ? (data['timestamp'] as Timestamp)
-                                        .toDate()
-                                        .toString()
-                                    : 'No timestamp',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
+                            data['timestamp'] != null
+                                ? (data['timestamp'] as Timestamp)
+                                    .toDate()
+                                    .toString()
+                                : 'No timestamp',
+                            style: TextStyle(color: Colors.grey),
                           ),
                         ],
                       ),
-                    ),
-                  );
-                },
+                    ],
+                  ),
+                ),
               );
             },
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -700,7 +720,7 @@ class RecentActivity extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.history, color: primaryColor, size: 40),
+              Icon(Icons.history, color: Colors.blue, size: 40),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
