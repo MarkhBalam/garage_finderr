@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';  // Import the intl package
 
-
-
 class PaymentPage extends StatefulWidget {
   static route() => MaterialPageRoute(builder: (context) => PaymentPage());
 
@@ -216,9 +214,24 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
   }
 
   void _submitAmount() {
-    // You can handle the submission logic here
-    print('Amount submitted: $_amount');
-    Navigator.pop(context); // Go back to the previous page
+    // Show a "thank you" message
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Thank You'),
+          content: Text('Amount submitted: ${_currencyFormat.format(_amount)}'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
