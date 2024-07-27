@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';  // Import the intl package
 
+
+
 class PaymentPage extends StatefulWidget {
   static route() => MaterialPageRoute(builder: (context) => PaymentPage());
 
@@ -56,6 +58,11 @@ class _PaymentPageState extends State<PaymentPage> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => CashPaymentPage()),
+            );
+          } else if (method == 'Credit/Debit Card') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CreditCardPage()),
             );
           }
         });
@@ -293,6 +300,135 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CreditCardPage extends StatefulWidget {
+  @override
+  _CreditCardPageState createState() => _CreditCardPageState();
+}
+
+class _CreditCardPageState extends State<CreditCardPage> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+
+  void _submitDetails() {
+    if (_formKey.currentState!.validate()) {
+      // Handle submission
+      String email = _emailController.text;
+      int amount = int.parse(_amountController.text);
+      print('Email: $email');
+      print('Amount: $amount');
+      // TODO: Add your API call here
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Credit/Debit Card Payment'),
+        backgroundColor: Colors.blue,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('lib/images/payment.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              SizedBox(height: 20),
+              Text(
+                'Please Fill in Some Details',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                ),
+              ),
+              SizedBox(height: 20),
+              _buildEmailField(),
+              SizedBox(height: 20),
+              _buildAmountField(),
+              Spacer(),
+              ElevatedButton(
+                onPressed: _submitDetails,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+                child: Text('Submit', style: TextStyle(fontSize: 18)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmailField() {
+    return TextFormField(
+      controller: _emailController,
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        labelText: 'Email',
+        hintText: 'e.g. name@email.com',
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.8),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your email';
+        }
+        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+          return 'Please enter a valid email address';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildAmountField() {
+    return TextFormField(
+      controller: _amountController,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: 'Amount',
+        hintText: 'UGX eg 40,000',
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.8),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        suffixText: 'UGX',
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter an amount';
+        }
+        int? amount = int.tryParse(value);
+        if (amount == null) {
+          return 'Please enter a valid amount';
+        }
+        if (amount < 500 || amount > 8000000) {
+          return 'Amount must be between 500 and 8,000,000 UGX';
+        }
+        return null;
+      },
     );
   }
 }
