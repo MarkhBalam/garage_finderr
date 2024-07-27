@@ -201,7 +201,7 @@ class CashPaymentPage extends StatefulWidget {
 
 class _CashPaymentPageState extends State<CashPaymentPage> {
   int _amount = 0;
-  final NumberFormat _currencyFormat = NumberFormat.currency(symbol: '\$');
+  final NumberFormat _currencyFormat = NumberFormat.currency(symbol: 'UGX');
 
   void _incrementAmount() {
     setState(() {
