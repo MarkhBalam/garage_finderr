@@ -221,7 +221,7 @@ class CashPaymentPage extends StatefulWidget {
 
 class _CashPaymentPageState extends State<CashPaymentPage> {
   int _amount = 0;
-  final NumberFormat _currencyFormat = NumberFormat.currency(symbol: '\$');
+  final NumberFormat _currencyFormat = NumberFormat.currency(symbol: 'shs');
 
   void _incrementAmount() {
     setState(() {
@@ -237,7 +237,7 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
 
   void _submitAmount() {
     // You can handle the submission logic here
-    print('Amount submitted: $_amount');
+    print('Amount submitted: shs_amount');
     Navigator.pop(context); // Go back to the previous page
   }
 
