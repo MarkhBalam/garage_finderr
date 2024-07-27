@@ -83,26 +83,7 @@ class _PaymentPageState extends State<PaymentPage> {
               fontSize: 18,
             ),
           ),
-          trailing: Radio<String>(
-            value: method,
-            groupValue: _selectedPaymentMethod,
-            onChanged: (value) {
-              setState(() {
-                _selectedPaymentMethod = value!;
-                if (method == 'Mobile Money') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MobileMoneyPage()),
-                  );
-                } else if (method == 'Cash') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CashPaymentPage()),
-                  );
-                }
-              });
-            },
-          ),
+          trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey),
         ),
       ),
     );
@@ -199,15 +180,7 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
               fontSize: 18,
             ),
           ),
-          trailing: Radio<String>(
-            value: operator,
-            groupValue: _selectedOperator,
-            onChanged: (value) {
-              setState(() {
-                _selectedOperator = value!;
-              });
-            },
-          ),
+          trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey),
         ),
       ),
     );
@@ -221,7 +194,7 @@ class CashPaymentPage extends StatefulWidget {
 
 class _CashPaymentPageState extends State<CashPaymentPage> {
   int _amount = 0;
-  final NumberFormat _currencyFormat = NumberFormat.currency(symbol: 'shs');
+  final NumberFormat _currencyFormat = NumberFormat.currency(symbol: '\$');
 
   void _incrementAmount() {
     setState(() {
@@ -237,7 +210,7 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
 
   void _submitAmount() {
     // You can handle the submission logic here
-    print('Amount submitted: shs_amount');
+    print('Amount submitted: $_amount');
     Navigator.pop(context); // Go back to the previous page
   }
 
