@@ -6,7 +6,6 @@ import "package:garage_finder/pages/payments.dart";
 import 'package:garage_finder/pages/common_car_problems.dart';
 import 'package:garage_finder/pages/map_pages.dart';
 import "package:garage_finder/pages/breakdown_assistance.dart";
-import "package:garage_finder/pages/recent_activity.dart";
 import "package:garage_finder/pages/support_and_feedback.dart";
 import "package:garage_finder/pages/about_us.dart";
 import "package:garage_finder/pages/contact_us.dart";
