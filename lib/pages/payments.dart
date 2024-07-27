@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';  // Import the intl package
 
 class PaymentPage extends StatefulWidget {
   static route() => MaterialPageRoute(builder: (context) => PaymentPage());
@@ -220,6 +221,7 @@ class CashPaymentPage extends StatefulWidget {
 
 class _CashPaymentPageState extends State<CashPaymentPage> {
   int _amount = 0;
+  final NumberFormat _currencyFormat = NumberFormat.currency(symbol: '\$');
 
   void _incrementAmount() {
     setState(() {
@@ -258,46 +260,47 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
           children: [
             Row(
               children: [
-                Container(
-                  width: 200,
-                  padding: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(12.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 6.0,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Enter Amount',
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.remove, size: 30),
-                            onPressed: _decrementAmount,
-                          ),
-                          Text(
-                            '$_amount',
-                            style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.add, size: 30),
-                            onPressed: _incrementAmount,
-                          ),
-                        ],
-                      ),
-                    ],
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(12.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 6.0,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Enter Amount',
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.remove, size: 30),
+                              onPressed: _decrementAmount,
+                            ),
+                            Text(
+                              _currencyFormat.format(_amount),
+                              style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.add, size: 30),
+                              onPressed: _incrementAmount,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
