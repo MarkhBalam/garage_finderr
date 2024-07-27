@@ -30,13 +30,11 @@ class _PaymentPageState extends State<PaymentPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
-            _buildPaymentOption(
-                'Mobile Money', Icons.phone_android, Colors.blue),
+            _buildPaymentOption('Mobile Money', Icons.phone_android, Colors.blue),
             Spacer(),
             _buildPaymentOption('Cash', Icons.attach_money, Colors.green),
             Spacer(),
-            _buildPaymentOption(
-                'Credit/Debit Card', Icons.credit_card, Colors.orange),
+            _buildPaymentOption('Credit/Debit Card', Icons.credit_card, Colors.orange),
           ],
         ),
       ),
@@ -257,28 +255,50 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
         ),
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 20),
-            Text(
-              'Enter Amount',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
+          children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.remove, size: 30),
-                  onPressed: _decrementAmount,
-                ),
-                Text(
-                  '$_amount',
-                  style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-                ),
-                IconButton(
-                  icon: Icon(Icons.add, size: 30),
-                  onPressed: _incrementAmount,
+              children: [
+                Container(
+                  width: 200,
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(12.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 6.0,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'Enter Amount',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.remove, size: 30),
+                            onPressed: _decrementAmount,
+                          ),
+                          Text(
+                            '$_amount',
+                            style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.add, size: 30),
+                            onPressed: _incrementAmount,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
