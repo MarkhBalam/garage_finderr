@@ -53,6 +53,11 @@ class _PaymentPageState extends State<PaymentPage> {
               context,
               MaterialPageRoute(builder: (context) => MobileMoneyPage()),
             );
+          } else if (method == 'Cash') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CashPaymentPage()),
+            );
           }
         });
       },
@@ -89,6 +94,11 @@ class _PaymentPageState extends State<PaymentPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => MobileMoneyPage()),
+                  );
+                } else if (method == 'Cash') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CashPaymentPage()),
                   );
                 }
               });
@@ -199,6 +209,92 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
               });
             },
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class CashPaymentPage extends StatefulWidget {
+  @override
+  _CashPaymentPageState createState() => _CashPaymentPageState();
+}
+
+class _CashPaymentPageState extends State<CashPaymentPage> {
+  int _amount = 0;
+
+  void _incrementAmount() {
+    setState(() {
+      _amount++;
+    });
+  }
+
+  void _decrementAmount() {
+    setState(() {
+      if (_amount > 0) _amount--;
+    });
+  }
+
+  void _submitAmount() {
+    // You can handle the submission logic here
+    print('Amount submitted: $_amount');
+    Navigator.pop(context); // Go back to the previous page
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Cash Payment'),
+        backgroundColor: Colors.blue,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('lib/images/payment.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(height: 20),
+            Text(
+              'Enter Amount',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.remove, size: 30),
+                  onPressed: _decrementAmount,
+                ),
+                Text(
+                  '$_amount',
+                  style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: Icon(Icons.add, size: 30),
+                  onPressed: _incrementAmount,
+                ),
+              ],
+            ),
+            Spacer(),
+            ElevatedButton(
+              onPressed: _submitAmount,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding: EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+              ),
+              child: Text('Submit', style: TextStyle(fontSize: 18)),
+            ),
+          ],
         ),
       ),
     );
