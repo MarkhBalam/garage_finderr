@@ -203,7 +203,9 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
 
   void _incrementAmount() {
     setState(() {
-      _amount++;
+      if (_amount < 1000000) {
+        _amount++;
+      }
     });
   }
 
