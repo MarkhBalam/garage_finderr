@@ -286,16 +286,16 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             IconButton(
-                              icon: Icon(Icons.remove, size: 30),
-                              onPressed: _decrementAmount,
+                              icon: Icon(Icons.add, size: 30), // Increment button
+                              onPressed: _incrementAmount,
                             ),
                             Text(
                               _currencyFormat.format(_amount),
                               style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                             ),
                             IconButton(
-                              icon: Icon(Icons.add, size: 30),
-                              onPressed: _incrementAmount,
+                              icon: Icon(Icons.remove, size: 30), // Decrement button
+                              onPressed: _decrementAmount,
                             ),
                           ],
                         ),
