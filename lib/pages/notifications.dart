@@ -12,7 +12,7 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notifications"),
+        title: Text("Garage Finder"),
         backgroundColor: Colors.blue,
       ),
       body: Container(
@@ -32,7 +32,7 @@ class _NotificationPageState extends State<NotificationPage> {
               children: [
                 // Display the text
                 Text(
-                  'No notifications here yet.',
+                  'No notifications here yet!',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
