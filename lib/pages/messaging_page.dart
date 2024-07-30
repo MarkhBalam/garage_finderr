@@ -11,21 +11,7 @@ class MessagingPage extends StatefulWidget {
   _MessagingPageState createState() => _MessagingPageState();
 }
 
-class _MessagingPageState extends State<MessagingPage> {
-  final TextEditingController _controller = TextEditingController();
 
-  void _sendMessage() async {
-    if (_controller.text.isNotEmpty) {
-      try {
-        await FirebaseFirestore.instance
-            .collection('chats')
-            .doc(widget.chatId)
-            .collection('messages')
-            .add({
-          'senderId': widget.userId,
-          'text': _controller.text,
-          'timestamp': FieldValue.serverTimestamp(),
-        });
 
         await FirebaseFirestore.instance
             .collection('chats')
