@@ -62,16 +62,12 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
 
   Future<String?> _uploadImage(File image) async {
     try {
-      final startTime = DateTime.now();
       final ref = FirebaseStorage.instance
           .ref()
           .child('problem_images')
           .child(DateTime.now().toIso8601String() + '.jpg');
       final uploadTask = ref.putFile(image);
       final snapshot = await uploadTask;
-      final endTime = DateTime.now();
-      print(
-          'Image upload time: ${endTime.difference(startTime).inSeconds} seconds');
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
       print('Error uploading image: $e');
@@ -91,15 +87,10 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
       final contactNumber = _contactNumberController.text;
 
       String? imageUrl;
-      final imageStartTime = DateTime.now();
       if (_selectedImage != null) {
         imageUrl = await _uploadImage(_selectedImage!);
       }
-      final imageEndTime = DateTime.now();
-      print(
-          'Total image upload time: ${imageEndTime.difference(imageStartTime).inSeconds} seconds');
 
-      final firestoreStartTime = DateTime.now();
       User? currentUser = FirebaseAuth.instance.currentUser;
       String? username = currentUser?.displayName ?? 'Anonymous';
 
@@ -112,9 +103,6 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
         'timestamp': FieldValue.serverTimestamp(),
         'username': username,
       });
-      final firestoreEndTime = DateTime.now();
-      print(
-          'Firestore write time: ${firestoreEndTime.difference(firestoreStartTime).inSeconds} seconds');
 
       _problemController.clear();
       _contactNumberController.clear();
@@ -359,9 +347,12 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
                               ),
                             ),
                             child: _selectedImage != null
-                                ? Image.file(
-                                    _selectedImage!,
-                                    fit: BoxFit.cover,
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.file(
+                                      _selectedImage!,
+                                      fit: BoxFit.cover,
+                                    ),
                                   )
                                 : Center(
                                     child: Text(
