@@ -62,16 +62,12 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
 
   Future<String?> _uploadImage(File image) async {
     try {
-      final startTime = DateTime.now();
       final ref = FirebaseStorage.instance
           .ref()
           .child('problem_images')
           .child(DateTime.now().toIso8601String() + '.jpg');
       final uploadTask = ref.putFile(image);
       final snapshot = await uploadTask;
-      final endTime = DateTime.now();
-      print(
-          'Image upload time: ${endTime.difference(startTime).inSeconds} seconds');
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
       print('Error uploading image: $e');
@@ -91,15 +87,10 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
       final contactNumber = _contactNumberController.text;
 
       String? imageUrl;
-      final imageStartTime = DateTime.now();
       if (_selectedImage != null) {
         imageUrl = await _uploadImage(_selectedImage!);
       }
-      final imageEndTime = DateTime.now();
-      print(
-          'Total image upload time: ${imageEndTime.difference(imageStartTime).inSeconds} seconds');
 
-      final firestoreStartTime = DateTime.now();
       User? currentUser = FirebaseAuth.instance.currentUser;
       String? username = currentUser?.displayName ?? 'Anonymous';
 
@@ -112,9 +103,6 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
         'timestamp': FieldValue.serverTimestamp(),
         'username': username,
       });
-      final firestoreEndTime = DateTime.now();
-      print(
-          'Firestore write time: ${firestoreEndTime.difference(firestoreStartTime).inSeconds} seconds');
 
       _problemController.clear();
       _contactNumberController.clear();
@@ -264,43 +252,43 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
                           ),
                         ],
                         const SizedBox(height: 13),
-                        DropdownButtonFormField<String>(
-                          decoration: InputDecoration(
-                            labelText: 'Car Model',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                        if (_selectedBrand != 'Other')
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: 'Car Model',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              filled: true,
+                              fillColor: Colors.blueGrey[50],
                             ),
-                            filled: true,
-                            fillColor: Colors.blueGrey[50],
-                          ),
-                          value: _selectedCarModel,
-                          items: _availableModels.map((model) {
-                            return DropdownMenuItem<String>(
-                              value: model,
-                              child: Text(model),
-                            );
-                          }).toList()
-                            ..add(DropdownMenuItem<String>(
-                              value: 'Other',
-                              child: Text('Other'),
-                            )),
-                          onChanged: (newValue) {
-                            setState(() {
-                              _selectedCarModel = newValue;
-                              if (newValue != 'Other') {
+                            value: _selectedCarModel,
+                            items: _availableModels.map((model) {
+                              return DropdownMenuItem<String>(
+                                value: model,
+                                child: Text(model),
+                              );
+                            }).toList()
+                              ..add(DropdownMenuItem<String>(
+                                value: 'Other',
+                                child: Text('Other'),
+                              )),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedCarModel = newValue;
                                 _manualCarModel = null; // Reset manual input
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please select your car model';
                               }
-                            });
-                          },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select your car model';
-                            }
-                            return null;
-                          },
-                        ),
-                        if (_selectedCarModel == 'Other') ...[
-                          const SizedBox(height: 16),
+                              return null;
+                            },
+                          ),
+                        if (_selectedBrand == 'Other' ||
+                            _selectedCarModel == 'Other') ...[
+                          const SizedBox(height: 13),
                           TextFormField(
                             decoration: InputDecoration(
                               labelText: 'Enter Car Model',
@@ -314,7 +302,8 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
                               _manualCarModel = value;
                             },
                             validator: (value) {
-                              if (_selectedCarModel == 'Other' &&
+                              if ((_selectedBrand == 'Other' ||
+                                      _selectedCarModel == 'Other') &&
                                   (value == null || value.isEmpty)) {
                                 return 'Please enter your car model';
                               }
@@ -338,83 +327,60 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your contact number';
                             }
+                            if (value.length != 10) {
+                              return 'Contact number must be 10 digits long';
+                            }
                             return null;
                           },
                         ),
-                        const SizedBox(height: 15),
-                        _selectedImage == null
-                            ? GestureDetector(
-                                onTap: _pickImage,
-                                child: Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.blueGrey,
-                                      width: 2,
-                                    ),
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: Colors.blueGrey[50],
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.image,
-                                        size: 50,
-                                        color: Colors.blueGrey,
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Text(
-                                        'Upload Picture',
-                                        style: TextStyle(
-                                          color: Colors.blueGrey[800],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : Column(
-                                children: [
-                                  ClipRRect(
+                        const SizedBox(height: 13),
+                        GestureDetector(
+                          onTap: _pickImage,
+                          child: Container(
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.blueGrey,
+                                width: 1,
+                              ),
+                            ),
+                            child: _selectedImage != null
+                                ? ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: Image.file(
                                       _selectedImage!,
-                                      height: 150,
-                                      width: double.infinity,
                                       fit: BoxFit.cover,
                                     ),
-                                  ),
-                                  TextButton(
-                                    onPressed: _pickImage,
+                                  )
+                                : Center(
                                     child: Text(
-                                      'Change Picture',
+                                      'Tap to pick an image',
                                       style: TextStyle(
-                                        color: Colors.blueGrey[800],
+                                        color: Colors.blueGrey,
                                       ),
                                     ),
                                   ),
-                                ],
+                          ),
+                        ),
+                        const SizedBox(height: 13),
+                        if (_isLoading)
+                          Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        else
+                          ElevatedButton(
+                            onPressed: _submitForm,
+                            child: Text('Submit'),
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 24),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                        const SizedBox(height: 20),
-                        _isLoading
-                            ? Center(child: CircularProgressIndicator())
-                            : ElevatedButton(
-                                onPressed: _submitForm,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 15),
-                                ),
-                                child: Text(
-                                  'Submit',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),

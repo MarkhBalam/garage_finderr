@@ -5,8 +5,6 @@ import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:garage_finder/pages/home_page.dart';
 import 'package:garage_finder/pages/payments.dart';
-//import 'package:garage_finder/lib/pages/rating_page.dart';  // Import your page that contains the rating UI
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
