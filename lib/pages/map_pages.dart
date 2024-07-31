@@ -198,13 +198,14 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         leading: IconButton(
             onPressed: () {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => HomePage()));
             },
             icon: Icon(Icons.arrow_back)),
-        title: Text('Nearby Mechanics'),
+        title: Text('Tap on the nearest garage'),
       ),
       body: _center == null
           ? Center(
