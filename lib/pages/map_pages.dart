@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:geocoding/geocoding.dart';
 import 'package:image/image.dart' as IMG;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -17,11 +18,10 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   GoogleMapController? mapController;
-  LatLng? _center; // Center will be set after geocoding
+  LatLng? _center; // Center will be set to the user's current location
   final Set<Marker> _markers = {};
   final Set<Polyline> _polylines = {};
   LatLng? _selectedMarkerPosition;
-  final TextEditingController _locationController = TextEditingController();
   final String _apiKey = GOOGLE_MAPS_API_KEY;
   Uint8List? _inputLocationIcon;
 
@@ -31,10 +31,8 @@ class _MapPageState extends State<MapPage> {
     _setCustomMarker();
     _requestLocationPermission().then((permissionGranted) {
       if (permissionGranted) {
-        // If permission is granted, you can proceed with location-based operations
-        // For example, you might want to get the user's current location here
+        _getCurrentLocation();
       } else {
-        // Handle the case where permission is not granted
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
@@ -69,6 +67,15 @@ class _MapPageState extends State<MapPage> {
     return resizedData;
   }
 
+  Future<void> _getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      _center = LatLng(position.latitude, position.longitude);
+    });
+    _findNearbyMechanics();
+  }
+
   Future<void> _findNearbyMechanics() async {
     if (_center == null) return;
 
@@ -91,7 +98,7 @@ class _MapPageState extends State<MapPage> {
             position: _center!,
             icon: BitmapDescriptor.fromBytes(_inputLocationIcon!),
             anchor: const Offset(0.5, 0.5),
-            infoWindow: InfoWindow(title: 'Input Location'),
+            infoWindow: InfoWindow(title: 'Your Location'),
           ),
         );
 
@@ -118,32 +125,6 @@ class _MapPageState extends State<MapPage> {
       });
     } else {
       print('Error: ${response.reasonPhrase}');
-    }
-  }
-
-  Future<void> _searchLocation() async {
-    final query = _locationController.text;
-    if (query.isEmpty) return;
-
-    try {
-      List<Location> locations = await locationFromAddress(query);
-      if (locations.isNotEmpty) {
-        final location = locations.first;
-        setState(() {
-          _center = LatLng(location.latitude, location.longitude);
-          mapController?.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                target: _center!,
-                zoom: 12.0,
-              ),
-            ),
-          );
-          _findNearbyMechanics();
-        });
-      }
-    } catch (e) {
-      print('Error finding location: $e');
     }
   }
 
@@ -225,38 +206,19 @@ class _MapPageState extends State<MapPage> {
             icon: Icon(Icons.arrow_back)),
         title: Text('Nearby Mechanics'),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _locationController,
-              decoration: InputDecoration(
-                hintText: 'Enter location',
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: _searchLocation,
-                ),
+      body: _center == null
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: _center!,
+                zoom: 12.0,
               ),
-              onSubmitted: (value) => _searchLocation(),
+              markers: _markers,
+              polylines: _polylines,
             ),
-          ),
-          Expanded(
-            child: _center == null
-                ? Center(
-                    child: Text('Enter a location to find nearby mechanics'))
-                : GoogleMap(
-                    onMapCreated: _onMapCreated,
-                    initialCameraPosition: CameraPosition(
-                      target: _center!,
-                      zoom: 12.0,
-                    ),
-                    markers: _markers,
-                    polylines: _polylines,
-                  ),
-          ),
-        ],
-      ),
     );
   }
 }
