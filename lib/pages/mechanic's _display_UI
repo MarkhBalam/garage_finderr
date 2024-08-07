@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class MapScreen extends StatefulWidget {
+  final String mechanicId;
+
+  const MapScreen({Key? key, required this.mechanicId}) : super(key: key);
+
+  @override
+  _MapScreenState createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
+  late Stream<DocumentSnapshot<Map<String, dynamic>>> _locationStream;
+  LatLng _currentLocation = LatLng(0, 0);
+
+  @override
+  void initState() {
+    super.initState();
+    _locationStream = FirebaseFirestore.instance
+        .collection('mechanics')
+        .doc(widget.mechanicId)
+        .snapshots();
+
+    _locationStream.listen((snapshot) {
+      if (snapshot.exists) {
+        final data = snapshot.data();
+        if (data != null) {
+          final location = data['location'];
+          if (location != null) {
+            setState(() {
+              _currentLocation = LatLng(
+                location['latitude'],
+                location['longitude'],
+              );
+            });
+          }
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Mechanic\'s Location')),
+      body: GoogleMap(
+        initialCameraPosition: CameraPosition(
+          target: _currentLocation,
+          zoom: 15,
+        ),
+        markers: {
+          Marker(
+            markerId: MarkerId('mechanic'),
+            position: _currentLocation,
+          ),
+        },
+        onMapCreated: (GoogleMapController controller) {},
+      ),
+    );
+  }
+}
