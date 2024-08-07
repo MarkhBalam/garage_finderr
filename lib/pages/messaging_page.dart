@@ -14,4 +14,12 @@ class _MessagingPageState extends State<MessagingPage> {
   final TextEditingController _controller = TextEditingController();
   bool _isSending = false;
 
-  
+  void _sendMessage() async {
+    if (_controller.text.isNotEmpty && !_isSending) {
+      String messageText = _controller.text;
+      setState(() {
+        _isSending = true;
+        _controller.clear(); // Clear the text field immediately
+      });
+
+      
