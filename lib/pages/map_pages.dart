@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:garage_finder/pages/messaging_page.dart';
 import 'package:garage_finder/pages/consts.dart';
 import 'package:garage_finder/pages/home_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -11,6 +10,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:image/image.dart' as IMG;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:garage_finder/pages/messaging_page.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -26,6 +26,8 @@ class _MapPageState extends State<MapPage> {
   final String _apiKey = GOOGLE_MAPS_API_KEY;
   Uint8List? _inputLocationIcon;
   bool _showChatButton = false;
+  String _chatId = 'exampleChatId'; // Example chat ID
+  String _userId = 'exampleUserId'; // Example user ID
 
   @override
   void initState() {
@@ -269,7 +271,15 @@ class _MapPageState extends State<MapPage> {
                         ),
                       ),
                       onPressed: () {
-                        // Handle chat button press here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MessagingPage(
+                              chatId: _chatId,
+                              userId: _userId,
+                            ),
+                          ),
+                        );
                       },
                       child: Text(
                         'Chat with Mechanic',
