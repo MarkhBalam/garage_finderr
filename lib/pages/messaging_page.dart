@@ -5,3 +5,8 @@ class MessagingPage extends StatefulWidget {
   final String chatId;
   final String userId;
 
+  MessagingPage({required this.chatId, required this.userId});
+
+  @override
+  _MessagingPageState createState() => _MessagingPageState();
+}
