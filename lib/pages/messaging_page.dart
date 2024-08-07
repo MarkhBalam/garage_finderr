@@ -33,4 +33,24 @@ class _MessagingPageState extends State<MessagingPage> {
           'timestamp': FieldValue.serverTimestamp(),
         });
 
-        
+        await FirebaseFirestore.instance
+            .collection('chats')
+            .doc(widget.chatId)
+            .update({
+          'lastMessage': messageText,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      } catch (e) {
+        print('Failed to send message: $e');
+        setState(() {
+          _controller.text = messageText; // Restore text if sending fails
+        });
+      } finally {
+        setState(() {
+          _isSending = false;
+        });
+      }
+    }
+  }
+
+ 
