@@ -10,6 +10,7 @@ class MessagingPage extends StatefulWidget {
   @override
   _MessagingPageState createState() => _MessagingPageState();
 }
+
 class _MessagingPageState extends State<MessagingPage> {
   final TextEditingController _controller = TextEditingController();
   bool _isSending = false;
@@ -119,4 +120,19 @@ class _MessagingPageState extends State<MessagingPage> {
                     ),
                   ),
                 ),
-                
+                SizedBox(width: 8.0),
+                FloatingActionButton(
+                  onPressed: _sendMessage,
+                  child: _isSending
+                      ? CircularProgressIndicator()
+                      : Icon(Icons.send),
+                  backgroundColor: Colors.blue,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
