@@ -118,6 +118,7 @@ class _MapPageState extends State<MapPage> {
                 _selectedMarkerPosition = LatLng(lat, lng);
                 _drawPolyline();
               });
+              _showPairWithMechanicDialog(result['name']);
             },
           );
           _markers.add(marker);
@@ -192,6 +193,33 @@ class _MapPageState extends State<MapPage> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+  }
+
+  void _showPairWithMechanicDialog(String garageName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Pair with Mechanic'),
+          content: Text('Do you want to pair with a mechanic at $garageName?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Pair'),
+              onPressed: () {
+                // Handle the pairing action here
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
