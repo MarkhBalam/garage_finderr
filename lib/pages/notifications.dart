@@ -13,7 +13,7 @@ class _NotificationPageState extends State<NotificationPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Notifications"),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color.fromARGB(255, 17, 17, 17),
       ),
       body: Container(
         width: double.infinity,
