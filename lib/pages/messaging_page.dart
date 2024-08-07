@@ -22,4 +22,15 @@ class _MessagingPageState extends State<MessagingPage> {
         _controller.clear(); // Clear the text field immediately
       });
 
-      
+      try {
+        await FirebaseFirestore.instance
+            .collection('chats')
+            .doc(widget.chatId)
+            .collection('messages')
+            .add({
+          'senderId': widget.userId,
+          'text': messageText,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+
+        
