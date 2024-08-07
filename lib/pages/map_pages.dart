@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:garage_finder/pages/messaging_page.dart';
 import 'package:garage_finder/pages/consts.dart';
 import 'package:garage_finder/pages/home_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
