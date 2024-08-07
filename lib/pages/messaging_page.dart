@@ -83,4 +83,21 @@ class _MessagingPageState extends State<MessagingPage> {
                   return Center(child: CircularProgressIndicator());
                 }
 
-                
+                var messages = snapshot.data!.docs;
+
+                return ListView.builder(
+                  padding: EdgeInsets.all(8.0),
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    var message = messages[index];
+                    var isMe = message['senderId'] == widget.userId;
+                    return MessageBubble(
+                      text: message['text'],
+                      isMe: isMe,
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          
