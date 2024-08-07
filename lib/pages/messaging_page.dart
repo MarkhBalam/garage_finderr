@@ -10,3 +10,8 @@ class MessagingPage extends StatefulWidget {
   @override
   _MessagingPageState createState() => _MessagingPageState();
 }
+class _MessagingPageState extends State<MessagingPage> {
+  final TextEditingController _controller = TextEditingController();
+  bool _isSending = false;
+
+  
