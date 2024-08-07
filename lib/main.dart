@@ -6,6 +6,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:garage_finder/pages/map_pages.dart';
 import 'package:garage_finder/pages/home_page.dart';
 import 'package:garage_finder/pages/payments.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:garage_finder/pages/notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
