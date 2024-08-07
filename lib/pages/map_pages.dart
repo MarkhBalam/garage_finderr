@@ -24,6 +24,7 @@ class _MapPageState extends State<MapPage> {
   LatLng? _selectedMarkerPosition;
   final String _apiKey = GOOGLE_MAPS_API_KEY;
   Uint8List? _inputLocationIcon;
+  bool _showChatButton = false;
 
   @override
   void initState() {
@@ -212,7 +213,9 @@ class _MapPageState extends State<MapPage> {
             TextButton(
               child: Text('Pair'),
               onPressed: () {
-                // Handle the pairing action here
+                setState(() {
+                  _showChatButton = true;
+                });
                 Navigator.of(context).pop();
               },
             ),
@@ -239,14 +242,45 @@ class _MapPageState extends State<MapPage> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: _center!,
-                zoom: 12.0,
-              ),
-              markers: _markers,
-              polylines: _polylines,
+          : Stack(
+              children: [
+                GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition: CameraPosition(
+                    target: _center!,
+                    zoom: 12.0,
+                  ),
+                  markers: _markers,
+                  polylines: _polylines,
+                ),
+                if (_showChatButton)
+                  Positioned(
+                    bottom: 70,
+                    left: 10,
+                    right: 10,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      onPressed: () {
+                        // Handle chat button press here
+                      },
+                      child: Text(
+                        'Chat with Mechanic',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
     );
   }
