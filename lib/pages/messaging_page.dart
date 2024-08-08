@@ -13,9 +13,16 @@ class MessagingPage extends StatefulWidget {
 
 class _MessagingPageState extends State<MessagingPage> {
   final TextEditingController _controller = TextEditingController();
+  bool _isSending = false;
 
   void _sendMessage() async {
-    if (_controller.text.isNotEmpty) {
+    if (_controller.text.isNotEmpty && !_isSending) {
+      String messageText = _controller.text;
+      setState(() {
+        _isSending = true;
+        _controller.clear(); // Clear the text field immediately
+      });
+
       try {
         await FirebaseFirestore.instance
             .collection('chats')
@@ -23,7 +30,7 @@ class _MessagingPageState extends State<MessagingPage> {
             .collection('messages')
             .add({
           'senderId': widget.userId,
-          'text': _controller.text,
+          'text': messageText,
           'timestamp': FieldValue.serverTimestamp(),
         });
 
@@ -31,13 +38,18 @@ class _MessagingPageState extends State<MessagingPage> {
             .collection('chats')
             .doc(widget.chatId)
             .update({
-          'lastMessage': _controller.text,
+          'lastMessage': messageText,
           'timestamp': FieldValue.serverTimestamp(),
         });
-
-        _controller.clear();
       } catch (e) {
         print('Failed to send message: $e');
+        setState(() {
+          _controller.text = messageText; // Restore text if sending fails
+        });
+      } finally {
+        setState(() {
+          _isSending = false;
+        });
       }
     }
   }
@@ -111,7 +123,9 @@ class _MessagingPageState extends State<MessagingPage> {
                 SizedBox(width: 8.0),
                 FloatingActionButton(
                   onPressed: _sendMessage,
-                  child: Icon(Icons.send),
+                  child: _isSending
+                      ? CircularProgressIndicator()
+                      : Icon(Icons.send),
                   backgroundColor: Colors.blue,
                 ),
               ],
