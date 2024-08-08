@@ -33,6 +33,8 @@ class MechanicRequestsPage extends StatelessWidget {
               final timestamp = (request['timestamp'] as Timestamp).toDate();
               final imageUrl =
                   request['imagePath'] as String? ?? ''; // Get image URL
+              final requestId =
+                  requests[index].id; // Get the document ID for updates
 
               return Card(
                 elevation: 5.0,
@@ -109,6 +111,34 @@ class MechanicRequestsPage extends StatelessWidget {
                         ],
                       ),
                     ),
+                    // Buttons for Accept and Ignore
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              _acceptRequest(requestId);
+                            },
+                            child: const Text('Accept'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              _ignoreRequest(requestId);
+                            },
+                            child: const Text('Ignore'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -117,5 +147,35 @@ class MechanicRequestsPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  // Method to handle accepting a request
+  Future<void> _acceptRequest(String requestId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('problems')
+          .doc(requestId)
+          .update({
+        'status': 'accepted',
+      });
+    } catch (e) {
+      // Handle error
+      print('Error accepting request: $e');
+    }
+  }
+
+  // Method to handle ignoring a request
+  Future<void> _ignoreRequest(String requestId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('problems')
+          .doc(requestId)
+          .update({
+        'status': 'ignored',
+      });
+    } catch (e) {
+      // Handle error
+      print('Error ignoring request: $e');
+    }
   }
 }
