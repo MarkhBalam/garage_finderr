@@ -55,7 +55,8 @@ class _MechanicHomePageState extends State<MechanicHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mechanic Home Page'),
+        title: const Text('Garage Finder'),
+        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
