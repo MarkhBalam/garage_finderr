@@ -39,6 +39,9 @@ class MechanicRequestsPage extends StatelessWidget {
                   request['imagePath'] as String? ?? ''; // Get image URL
               final requestId =
                   requests[index].id; // Get the document ID for updates
+              final problemDescription =
+                  request['problemDescription'] ?? 'No Description';
+              final contactNumber = request['contactNumber'] ?? '';
 
               return Card(
                 elevation: 5.0,
@@ -123,7 +126,8 @@ class MechanicRequestsPage extends StatelessWidget {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              _acceptRequest(requestId);
+                              _acceptRequest(
+                                  requestId, problemDescription, contactNumber);
                             },
                             child: const Text('Accept'),
                             style: ElevatedButton.styleFrom(
@@ -134,7 +138,8 @@ class MechanicRequestsPage extends StatelessWidget {
                           const SizedBox(width: 8),
                           ElevatedButton(
                             onPressed: () {
-                              _ignoreRequest(requestId);
+                              _ignoreRequest(
+                                  requestId, problemDescription, contactNumber);
                             },
                             child: const Text('Ignore'),
                             style: ElevatedButton.styleFrom(
@@ -156,13 +161,22 @@ class MechanicRequestsPage extends StatelessWidget {
   }
 
   // Method to handle accepting a request
-  Future<void> _acceptRequest(String requestId) async {
+  Future<void> _acceptRequest(
+      String requestId, String problemDescription, String contactNumber) async {
     try {
       await FirebaseFirestore.instance
           .collection('problems')
           .doc(requestId)
           .update({
         'status': 'accepted',
+      });
+
+      // Add notification to the driver
+      await FirebaseFirestore.instance.collection('notifications').add({
+        'contactNumber': contactNumber,
+        'message':
+            'Your request about "$problemDescription" has been accepted.',
+        'timestamp': FieldValue.serverTimestamp(),
       });
     } catch (e) {
       // Handle error
@@ -171,12 +185,20 @@ class MechanicRequestsPage extends StatelessWidget {
   }
 
   // Method to handle ignoring a request
-  Future<void> _ignoreRequest(String requestId) async {
+  Future<void> _ignoreRequest(
+      String requestId, String problemDescription, String contactNumber) async {
     try {
       await FirebaseFirestore.instance
           .collection('problems')
           .doc(requestId)
           .delete(); // Delete the document
+
+      // Add notification to the driver
+      await FirebaseFirestore.instance.collection('notifications').add({
+        'contactNumber': contactNumber,
+        'message': 'Your request about "$problemDescription" has been ignored.',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
     } catch (e) {
       // Handle error
       print('Error ignoring request: $e');
