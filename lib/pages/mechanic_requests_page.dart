@@ -12,7 +12,11 @@ class MechanicRequestsPage extends StatelessWidget {
         backgroundColor: Colors.blueAccent,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('problems').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('problems')
+            .where('status',
+                isEqualTo: 'pending') // Filter for pending requests
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -124,6 +128,7 @@ class MechanicRequestsPage extends StatelessWidget {
                             child: const Text('Accept'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
+                              foregroundColor: Colors.black, // Text color
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -134,6 +139,7 @@ class MechanicRequestsPage extends StatelessWidget {
                             child: const Text('Ignore'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red,
+                              foregroundColor: Colors.black, // Text color
                             ),
                           ),
                         ],
@@ -170,9 +176,7 @@ class MechanicRequestsPage extends StatelessWidget {
       await FirebaseFirestore.instance
           .collection('problems')
           .doc(requestId)
-          .update({
-        'status': 'ignored',
-      });
+          .delete(); // Delete the document
     } catch (e) {
       // Handle error
       print('Error ignoring request: $e');
