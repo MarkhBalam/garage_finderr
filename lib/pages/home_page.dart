@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                     minHeight: 14,
                   ),
                   child: Text(
-                    '0', // Replace '0' with the actual count
+                    '-', //
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 8,
