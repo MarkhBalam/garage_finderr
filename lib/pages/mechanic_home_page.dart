@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:garage_finder/pages/mechanic_requests_page.dart';
+import 'package:garage_finder/pages/mechanic_requests_page.dart'; // Ensure the path is correct
 
 class MechanicHomePage extends StatefulWidget {
   const MechanicHomePage({super.key});
@@ -13,7 +13,7 @@ class _MechanicHomePageState extends State<MechanicHomePage> {
   int _selectedIndex = 0;
 
   static const List<Widget> _widgetOptions = <Widget>[
-    HomeWidget(), // Modified to display the new home page content
+    HomeWidget(), // Displays the home page content
     Text(
       'My Account Page',
       style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
@@ -108,7 +108,13 @@ class HomeWidget extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              // Handle Mechanic Requests tap
+              // Navigate to Mechanic Requests Page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MechanicRequestsPage(),
+                ),
+              );
             },
             child: Card(
               elevation: 8.0,
