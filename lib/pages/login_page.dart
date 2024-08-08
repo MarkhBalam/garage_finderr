@@ -104,101 +104,149 @@ class _LoginPageState extends State<LoginPage> {
               ? const CircularProgressIndicator(
                   color: Colors.blue) // Show loading indicator
               : SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 50),
-                      const Icon(
-                        Icons.car_repair,
-                        size: 100,
-                        color: Colors.blue,
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        'Welcome Back!',
-                        style: TextStyle(
-                          color: Colors.blue[800],
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Ready to locate the nearest garage 😎!',
-                        style: TextStyle(
-                          color: Colors.blue[600],
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-
-                      // Email textfield
-                      MyTextField(
-                        controller: emailController,
-                        hintText: 'Email',
-                        obscureText: false,
-                      ),
-                      const SizedBox(height: 15),
-
-                      // Password textfield
-                      MyTextField(
-                        controller: passwordController,
-                        hintText: 'Password',
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 15),
-
-                      // Role dropdown
-                      DropdownButton<String>(
-                        value: selectedRole,
-                        items:
-                            <String>['driver', 'mechanic'].map((String role) {
-                          return DropdownMenuItem<String>(
-                            value: role,
-                            child: Text(role),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedRole = newValue!;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 10),
-
-                      // Sign in button
-                      MyButton(
-                        text: 'Sign In',
-                        onTap: signUserIn,
-                      ),
-                      const SizedBox(height: 40),
-
-                      // Not a member? Register now
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Not a member?',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 50),
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.blue[50],
+                            shape: BoxShape.circle,
                           ),
-                          const SizedBox(width: 4),
-                          GestureDetector(
-                            onTap: widget.onTap,
-                            child: const Text(
-                              'Register now',
+                          child: const Icon(
+                            Icons.car_repair,
+                            size: 100,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          'Welcome Back!',
+                          style: TextStyle(
+                            color: Colors.blue[800],
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Ready to locate the nearest garage 😎!',
+                          style: TextStyle(
+                            color: Colors.blue[600],
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+
+                        // "Login as" label with Role dropdown in the same widget
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 12.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.blue.withOpacity(0.2),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                            border: Border.all(color: Colors.blue[200]!),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Login as',
+                                style: TextStyle(
+                                  color: Colors.blue[800],
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: selectedRole,
+                                  items: <String>['driver', 'mechanic']
+                                      .map((String role) {
+                                    return DropdownMenuItem<String>(
+                                      value: role,
+                                      child: Text(
+                                        role,
+                                        style: TextStyle(
+                                          color: Colors.blue[800],
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedRole = newValue!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // Email textfield
+                        MyTextField(
+                          controller: emailController,
+                          hintText: 'Email',
+                          obscureText: false,
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Password textfield
+                        MyTextField(
+                          controller: passwordController,
+                          hintText: 'Password',
+                          obscureText: true,
+                        ),
+                        const SizedBox(height: 30),
+
+                        // Sign in button
+                        MyButton(
+                          text: 'Sign In',
+                          onTap: signUserIn,
+                        ),
+                        const SizedBox(height: 40),
+
+                        // Not a member? Register now
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Not a member?',
                               style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
                                 fontSize: 16,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                            const SizedBox(width: 4),
+                            GestureDetector(
+                              onTap: widget.onTap,
+                              child: const Text(
+                                'Register now',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
         ),
