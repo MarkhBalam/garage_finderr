@@ -37,6 +37,8 @@ class NotificationPage extends StatelessWidget {
               final message = notification['message'] ?? 'No message';
               final timestamp =
                   (notification['timestamp'] as Timestamp).toDate();
+              final notificationId =
+                  notifications[index].id; // Get the document ID for deletion
 
               return Card(
                 elevation: 5.0,
@@ -50,6 +52,12 @@ class NotificationPage extends StatelessWidget {
                   title: Text(message, style: TextStyle(fontSize: 16)),
                   subtitle: Text(timestamp.toLocal().toString(),
                       style: TextStyle(color: Colors.blueGrey)),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      _deleteNotification(notificationId);
+                    },
+                  ),
                 ),
               );
             },
@@ -57,5 +65,18 @@ class NotificationPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  // Method to handle deleting a notification
+  Future<void> _deleteNotification(String notificationId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('notifications')
+          .doc(notificationId)
+          .delete(); // Delete the notification document
+    } catch (e) {
+      // Handle error
+      print('Error deleting notification: $e');
+    }
   }
 }
