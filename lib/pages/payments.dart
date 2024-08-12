@@ -2,7 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutterwave_standard/flutterwave.dart';
 import 'package:flutterwave_standard/models/requests/customer.dart';
 import 'package:flutterwave_standard/models/responses/charge_response.dart';
-import 'package:intl/intl.dart'; // Import the intl package
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Payment App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: PaymentPage(),
+    );
+  }
+}
 
 class PaymentService {
   final String publicKey = 'FLWPUBK_TEST-e931b80b1f9dc244f8f9466593f25269-X';
@@ -15,6 +29,7 @@ class PaymentService {
     required String email,
     required String txRef,
     required String phoneNumber,
+    required String paymentOption,
   }) async {
     final Customer customer = Customer(
       name: "User",
@@ -28,7 +43,7 @@ class PaymentService {
       currency: currency,
       amount: amount,
       customer: customer,
-      paymentOptions: "mobilemoneyuganda",
+      paymentOptions: paymentOption,
       customization: Customization(title: "Live Payment"),
       txRef: txRef,
       isTestMode: true, // Change to false for live payments
@@ -99,9 +114,7 @@ class _PaymentPageState extends State<PaymentPage> {
           if (method == 'Mobile Money') {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => MobileMoneyPage(operator: method),
-              ),
+              MaterialPageRoute(builder: (context) => MobileMoneyPage()),
             );
           } else if (method == 'Cash') {
             Navigator.push(
@@ -147,10 +160,6 @@ class _PaymentPageState extends State<PaymentPage> {
 }
 
 class MobileMoneyPage extends StatefulWidget {
-  final String operator;
-
-  MobileMoneyPage({required this.operator});
-
   @override
   _MobileMoneyPageState createState() => _MobileMoneyPageState();
 }
@@ -160,12 +169,6 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedOperator = widget.operator;
-  }
 
   void _handlePayment() async {
     if (_selectedOperator.isNotEmpty) {
@@ -178,6 +181,7 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
       }
 
       final paymentService = PaymentService();
+      String paymentOption = _selectedOperator == 'Airtel' ? 'mobilemoneyairtel' : 'mobilemoneyuganda';
       bool result = await paymentService.initiatePayment(
         context: context,
         amount: _amountController.text,
@@ -185,6 +189,7 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
         email: _emailController.text,
         txRef: DateTime.now().millisecondsSinceEpoch.toString(),
         phoneNumber: _phoneNumberController.text,
+        paymentOption: paymentOption,
       );
 
       if (result) {
@@ -207,7 +212,7 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mobile Money Payment'),
+        title: Text('Select Mobile Money Operator'),
         backgroundColor: Colors.blue,
       ),
       body: Container(
@@ -221,65 +226,104 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Text(
-              'Operator: ${_selectedOperator}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
             SizedBox(height: 20),
-            TextField(
-              controller: _phoneNumberController,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                labelText: 'Phone Number',
-                filled: true,
-                fillColor: Colors.white.withOpacity(0.8),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.0),
+            _buildOperatorOption('Airtel', Colors.red),
+            _buildOperatorOption('MTN', Colors.yellow),
+            if (_selectedOperator.isNotEmpty) ...[
+              SizedBox(height: 20),
+              TextField(
+                controller: _phoneNumberController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  labelText: 'Phone Number',
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Amount',
-                hintText: 'UGX e.g. 40,000',
-                filled: true,
-                fillColor: Colors.white.withOpacity(0.8),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                suffixText: 'UGX',
-              ),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                hintText: 'e.g. name@email.com',
-                filled: true,
-                fillColor: Colors.white.withOpacity(0.8),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.0),
+              SizedBox(height: 10),
+              TextField(
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Amount',
+                  hintText: 'UGX e.g. 40,000',
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  suffixText: 'UGX',
                 ),
               ),
-            ),
-            Spacer(),
-            ElevatedButton(
-              onPressed: _handlePayment,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: EdgeInsets.symmetric(vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0),
+              SizedBox(height: 10),
+              TextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  hintText: 'e.g. name@email.com',
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
                 ),
               ),
-              child: Text('Pay', style: TextStyle(fontSize: 18)),
+              Spacer(),
+              ElevatedButton(
+                onPressed: _handlePayment,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+                child: Text('Pay', style: TextStyle(fontSize: 18)),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOperatorOption(String operator, Color color) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedOperator = operator;
+        });
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8.0),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6.0,
+              offset: Offset(0, 3),
             ),
           ],
+        ),
+        child: ListTile(
+          leading: Icon(Icons.radio_button_checked, color: color),
+          title: Text(
+            operator,
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          trailing: _selectedOperator == operator
+              ? Icon(Icons.check_circle, color: Colors.green)
+              : null,
         ),
       ),
     );
@@ -292,7 +336,6 @@ class CashPaymentPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cash Payment'),
-        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Text('Proceed to pay with cash.'),
@@ -307,13 +350,10 @@ class CreditCardPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Credit/Debit Card Payment'),
-        backgroundColor: Colors.blue,
       ),
       body: Center(
-        child: Text('Proceed to pay with a credit/debit card.'),
+        child: Text('Proceed to pay with credit or debit card.'),
       ),
     );
   }
 }
-
-
