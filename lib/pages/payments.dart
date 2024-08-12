@@ -3,21 +3,6 @@ import 'package:flutterwave_standard/flutterwave.dart';
 import 'package:flutterwave_standard/models/requests/customer.dart';
 import 'package:flutterwave_standard/models/responses/charge_response.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Payment App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: PaymentPage(),
-    );
-  }
-}
-
 class PaymentService {
   final String publicKey = 'FLWPUBK_TEST-e931b80b1f9dc244f8f9466593f25269-X';
   final String secretKey = 'FLWSECK_TEST-2765a8ccd0ebbe629792bb9314f4e1ef-X';
@@ -29,7 +14,6 @@ class PaymentService {
     required String email,
     required String txRef,
     required String phoneNumber,
-    required String paymentOption,
   }) async {
     final Customer customer = Customer(
       name: "User",
@@ -43,11 +27,11 @@ class PaymentService {
       currency: currency,
       amount: amount,
       customer: customer,
-      paymentOptions: paymentOption,
+      paymentOptions: "mobilemoneyuganda",
       customization: Customization(title: "Live Payment"),
       txRef: txRef,
-      isTestMode: true, // Change to false for live payments
-      redirectUrl: "https://your-redirect-url.com", // You can use any URL for testing
+      isTestMode: true,
+      redirectUrl: "https://your-redirect-url.com",
     );
 
     try {
@@ -73,22 +57,19 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  String _selectedPaymentMethod = ''; // Initialize with an empty string
+  String _selectedPaymentMethod = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Select Payment Method',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text('Select Payment Method'),
         backgroundColor: Colors.blue,
       ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('lib/images/payment.jpg'), // Background image
+            image: AssetImage('lib/images/payment.jpg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -114,7 +95,7 @@ class _PaymentPageState extends State<PaymentPage> {
           if (method == 'Mobile Money') {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MobileMoneyPage()),
+              MaterialPageRoute(builder: (context) => MobileMoneySelectionPage()),
             );
           } else if (method == 'Cash') {
             Navigator.push(
@@ -159,55 +140,12 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 }
 
-class MobileMoneyPage extends StatefulWidget {
+class MobileMoneySelectionPage extends StatefulWidget {
   @override
-  _MobileMoneyPageState createState() => _MobileMoneyPageState();
+  _MobileMoneySelectionPageState createState() => _MobileMoneySelectionPageState();
 }
 
-class _MobileMoneyPageState extends State<MobileMoneyPage> {
-  String _selectedOperator = '';
-  final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-
-  void _handlePayment() async {
-    if (_selectedOperator.isNotEmpty) {
-      // Validate the input fields
-      if (_phoneNumberController.text.isEmpty || _amountController.text.isEmpty || _emailController.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please fill in all fields')),
-        );
-        return;
-      }
-
-      final paymentService = PaymentService();
-      String paymentOption = _selectedOperator == 'Airtel' ? 'mobilemoneyairtel' : 'mobilemoneyuganda';
-      bool result = await paymentService.initiatePayment(
-        context: context,
-        amount: _amountController.text,
-        currency: 'UGX',
-        email: _emailController.text,
-        txRef: DateTime.now().millisecondsSinceEpoch.toString(),
-        phoneNumber: _phoneNumberController.text,
-        paymentOption: paymentOption,
-      );
-
-      if (result) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Payment successful')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Payment failed')),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select a mobile money operator')),
-      );
-    }
-  }
-
+class _MobileMoneySelectionPageState extends State<MobileMoneySelectionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -218,7 +156,7 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('lib/images/payment.jpg'), // Background image
+            image: AssetImage('lib/images/payment.jpg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -229,62 +167,6 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
             SizedBox(height: 20),
             _buildOperatorOption('Airtel', Colors.red),
             _buildOperatorOption('MTN', Colors.yellow),
-            if (_selectedOperator.isNotEmpty) ...[
-              SizedBox(height: 20),
-              TextField(
-                controller: _phoneNumberController,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  labelText: 'Phone Number',
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.8),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: _amountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Amount',
-                  hintText: 'UGX e.g. 40,000',
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.8),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  suffixText: 'UGX',
-                ),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'e.g. name@email.com',
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.8),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-              ),
-              Spacer(),
-              ElevatedButton(
-                onPressed: _handlePayment,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-                child: Text('Pay', style: TextStyle(fontSize: 18)),
-              ),
-            ],
           ],
         ),
       ),
@@ -294,9 +176,12 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
   Widget _buildOperatorOption(String operator, Color color) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _selectedOperator = operator;
-        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PaymentDetailsPage(operator: operator),
+          ),
+        );
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -321,39 +206,163 @@ class _MobileMoneyPageState extends State<MobileMoneyPage> {
               fontSize: 18,
             ),
           ),
-          trailing: _selectedOperator == operator
-              ? Icon(Icons.check_circle, color: Colors.green)
-              : null,
         ),
       ),
     );
   }
 }
 
-class CashPaymentPage extends StatelessWidget {
+class PaymentDetailsPage extends StatefulWidget {
+  final String operator;
+
+  PaymentDetailsPage({required this.operator});
+
+  @override
+  _PaymentDetailsPageState createState() => _PaymentDetailsPageState();
+}
+
+class _PaymentDetailsPageState extends State<PaymentDetailsPage> {
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+
+  void _handlePayment() async {
+    if (_phoneNumberController.text.isEmpty || _amountController.text.isEmpty || _emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    final paymentService = PaymentService();
+    bool result = await paymentService.initiatePayment(
+      context: context,
+      amount: _amountController.text,
+      currency: 'UGX',
+      email: _emailController.text,
+      txRef: DateTime.now().millisecondsSinceEpoch.toString(),
+      phoneNumber: _phoneNumberController.text,
+    );
+
+    if (result) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Payment successful')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Payment failed')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cash Payment'),
+        title: Text('Payment Details (${widget.operator})'),
+        backgroundColor: Colors.blue,
       ),
-      body: Center(
-        child: Text('Proceed to pay with cash.'),
-      ),
-    );
-  }
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('lib/images/payment.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              'Operator: ${widget.operator}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: _phoneNumberController,
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(
+                labelText: 'Phone Number',
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.8),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Amount',
+                hintText: 'UGX e.g. 40,000',
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.8),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                suffixText: 'UGX',
+              ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+             
+controller: _emailController,
+keyboardType: TextInputType.emailAddress,
+decoration: InputDecoration(
+labelText: 'Email',
+hintText: 'e.g. name@email.com',
+filled: true,
+fillColor: Colors.white.withOpacity(0.8),
+border: OutlineInputBorder(
+borderRadius: BorderRadius.circular(12.0),
+),
+),
+),
+Spacer(),
+ElevatedButton(
+onPressed: _handlePayment,
+style: ElevatedButton.styleFrom(
+backgroundColor: Colors.blue,
+padding: EdgeInsets.symmetric(vertical: 15),
+shape: RoundedRectangleBorder(
+borderRadius: BorderRadius.circular(12.0),
+),
+),
+child: Text('Pay', style: TextStyle(fontSize: 18)),
+),
+],
+),
+),
+);
+}
+}
+
+class CashPaymentPage extends StatelessWidget {
+@override
+Widget build(BuildContext context) {
+return Scaffold(
+appBar: AppBar(
+title: Text('Cash Payment'),
+),
+body: Center(
+child: Text('Proceed to pay with cash.'),
+),
+);
+}
 }
 
 class CreditCardPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Credit/Debit Card Payment'),
-      ),
-      body: Center(
-        child: Text('Proceed to pay with credit or debit card.'),
-      ),
-    );
-  }
+@override
+Widget build(BuildContext context) {
+return Scaffold(
+appBar: AppBar(
+title: Text('Credit/Debit Card Payment'),
+),
+body: Center(
+child: Text('Proceed to pay with credit or debit card.'),
+),
+);
+}
 }
