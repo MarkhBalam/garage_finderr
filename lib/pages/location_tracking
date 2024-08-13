@@ -1,0 +1,33 @@
+import 'package:geolocator/geolocator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class LocationService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String mechanicId;
+
+  LocationService(this.mechanicId);
+
+  Future<void> startTracking() async {
+    // Ensure location services are enabled
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Handle the error or prompt the user to enable location services
+      return;
+    }
+
+    // Get location updates
+    Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.best,
+        distanceFilter: 10,
+      ),
+    ).listen((Position position) async {
+      await _firestore.collection('mechanics').doc(mechanicId).update({
+        'location': {
+          'latitude': position.latitude,
+          'longitude': position.longitude,
+        },
+      });
+    });
+  }
+}
