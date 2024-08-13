@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path/path.dart' as path;
 
 class BreakdownAssistancePage extends StatefulWidget {
   @override
@@ -10,16 +13,32 @@ class BreakdownAssistancePage extends StatefulWidget {
 
 class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _carModelController = TextEditingController();
+  String? _selectedBrand;
+  String? _selectedCarModel;
   String? _carSize;
+  String? _manualCarBrand;
+  String? _manualCarModel;
   File? _selectedImage;
   bool _isLoading = false;
 
-  @override
-  void dispose() {
-    _carModelController.dispose();
-    super.dispose();
-  }
+  final Map<String, List<String>> _carModelsByBrand = {
+    'Toyota': ['Camry', 'Corolla', 'Prius', 'RAV4', 'Highlander'],
+    'Honda': ['Accord', 'Civic', 'CR-V', 'Pilot', 'Fit'],
+    'Ford': ['F-150', 'Mustang', 'Explorer', 'Fusion', 'Escape'],
+    'Chevrolet': ['Silverado', 'Malibu', 'Equinox', 'Tahoe', 'Impala'],
+    'Nissan': ['Altima', 'Sentra', 'Rogue', 'Pathfinder', 'Maxima'],
+    'Hyundai': ['Elantra', 'Sonata', 'Tucson', 'Santa Fe', 'Kona'],
+    'BMW': ['3 Series', '5 Series', 'X3', 'X5', '7 Series'],
+    'Mercedes-Benz': ['C-Class', 'E-Class', 'S-Class', 'GLC', 'GLE'],
+    'Audi': ['A4', 'A6', 'Q5', 'Q7', 'A3'],
+    'Volkswagen': ['Jetta', 'Passat', 'Golf', 'Tiguan', 'Atlas'],
+    'Subaru': ['Outback', 'Forester', 'Impreza', 'Crosstrek', 'Legacy'],
+    'Mazda': ['Mazda3', 'Mazda6', 'CX-5', 'CX-9', 'MX-5 Miata'],
+    'Kia': ['Optima', 'Soul', 'Sorento', 'Sportage', 'Forte'],
+    'Tesla': ['Model S', 'Model 3', 'Model X', 'Model Y'],
+  };
+
+  List<String> _availableModels = [];
 
   Future<void> _pickImage() async {
     final pickedFile =
@@ -31,30 +50,56 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
     }
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() {
         _isLoading = true;
       });
 
-      // Simulate a network request or data submission
-      Future.delayed(Duration(seconds: 2), () {
-        setState(() {
-          _isLoading = false;
+      try {
+        String imagePath = '';
+        if (_selectedImage != null) {
+          String fileName = path.basename(_selectedImage!.path);
+          Reference storageReference = FirebaseStorage.instance
+              .ref()
+              .child('breakdown_images/$fileName');
+          UploadTask uploadTask = storageReference.putFile(_selectedImage!);
+          await uploadTask.whenComplete(() => null);
+          imagePath = await storageReference.getDownloadURL();
+        }
+
+        await FirebaseFirestore.instance.collection('breakdown').add({
+          'carBrand':
+              _selectedBrand == 'Other' ? _manualCarBrand : _selectedBrand,
+          'carModel': _selectedCarModel == 'Other'
+              ? _manualCarModel
+              : _selectedCarModel,
+          'carSize': _carSize,
+          'imagePath': imagePath,
+          'timestamp': Timestamp.now(),
         });
 
-        // Show a success message or navigate to another page
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Tow truck requested successfully!')),
         );
 
-        // Clear the form fields
-        _carModelController.clear();
         setState(() {
+          _selectedBrand = null;
+          _selectedCarModel = null;
+          _manualCarBrand = null;
+          _manualCarModel = null;
           _carSize = null;
           _selectedImage = null;
         });
-      });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to request tow truck: $e')),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -67,17 +112,14 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
       ),
       body: Stack(
         children: [
-          // Background image
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    'lib/images/c.jpg'), // Path to your background image
+                image: AssetImage('lib/images/c.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          // Main content
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView(
@@ -101,8 +143,70 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blueGrey[800])),
                           SizedBox(height: 16),
-                          TextFormField(
-                            controller: _carModelController,
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: 'Car Brand',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              filled: true,
+                              fillColor: Colors.blueGrey[50],
+                            ),
+                            value: _selectedBrand,
+                            items: _carModelsByBrand.keys.map((brand) {
+                              return DropdownMenuItem<String>(
+                                value: brand,
+                                child: Text(brand),
+                              );
+                            }).toList()
+                              ..add(DropdownMenuItem<String>(
+                                value: 'Other',
+                                child: Text('Other'),
+                              )),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedBrand = newValue;
+                                if (newValue != 'Other') {
+                                  _availableModels =
+                                      _carModelsByBrand[newValue]!;
+                                  _selectedCarModel = null;
+                                  _manualCarBrand = null;
+                                } else {
+                                  _availableModels = [];
+                                }
+                                _manualCarModel = null;
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please select your car brand';
+                              }
+                              return null;
+                            },
+                          ),
+                          if (_selectedBrand == 'Other') ...[
+                            SizedBox(height: 16),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'Enter Car Brand',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                filled: true,
+                                fillColor: Colors.blueGrey[50],
+                              ),
+                              onChanged: (value) {
+                                _manualCarBrand = value;
+                              },
+                              validator: (value) {
+                                if (_selectedBrand == 'Other' &&
+                                    (value == null || value.isEmpty)) {
+                                  return 'Please enter your car brand';
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                          SizedBox(height: 16),
+                          DropdownButtonFormField<String>(
                             decoration: InputDecoration(
                               labelText: 'Car Model',
                               border: OutlineInputBorder(
@@ -110,13 +214,52 @@ class _BreakdownAssistancePageState extends State<BreakdownAssistancePage> {
                               filled: true,
                               fillColor: Colors.blueGrey[50],
                             ),
+                            value: _selectedCarModel,
+                            items: _availableModels.map((model) {
+                              return DropdownMenuItem<String>(
+                                value: model,
+                                child: Text(model),
+                              );
+                            }).toList()
+                              ..add(DropdownMenuItem<String>(
+                                value: 'Other',
+                                child: Text('Other'),
+                              )),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedCarModel = newValue;
+                                _manualCarModel = null;
+                              });
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your car model';
+                                return 'Please select your car model';
                               }
                               return null;
                             },
                           ),
+                          if (_selectedCarModel == 'Other') ...[
+                            SizedBox(height: 16),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'Enter Car Model',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                filled: true,
+                                fillColor: Colors.blueGrey[50],
+                              ),
+                              onChanged: (value) {
+                                _manualCarModel = value;
+                              },
+                              validator: (value) {
+                                if (_selectedCarModel == 'Other' &&
+                                    (value == null || value.isEmpty)) {
+                                  return 'Please enter your car model';
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
                           SizedBox(height: 16),
                           DropdownButtonFormField<String>(
                             decoration: InputDecoration(

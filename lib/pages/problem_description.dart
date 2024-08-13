@@ -14,16 +14,38 @@ class ProblemDescriptionFormPage extends StatefulWidget {
 class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _problemController = TextEditingController();
-  final TextEditingController _carModelController = TextEditingController();
   final TextEditingController _contactNumberController =
       TextEditingController();
   File? _selectedImage;
   bool _isLoading = false;
 
+  // Map of car brands and their models
+  final Map<String, List<String>> _carModelsByBrand = {
+    'Toyota': ['Camry', 'Corolla', 'Prius', 'RAV4', 'Highlander'],
+    'Honda': ['Accord', 'Civic', 'CR-V', 'Pilot', 'Fit'],
+    'Ford': ['F-150', 'Mustang', 'Explorer', 'Fusion', 'Escape'],
+    'Chevrolet': ['Silverado', 'Malibu', 'Equinox', 'Tahoe', 'Impala'],
+    'Nissan': ['Altima', 'Sentra', 'Rogue', 'Pathfinder', 'Maxima'],
+    'Hyundai': ['Elantra', 'Sonata', 'Tucson', 'Santa Fe', 'Kona'],
+    'BMW': ['3 Series', '5 Series', 'X3', 'X5', '7 Series'],
+    'Mercedes-Benz': ['C-Class', 'E-Class', 'S-Class', 'GLC', 'GLE'],
+    'Audi': ['A4', 'A6', 'Q5', 'Q7', 'A3'],
+    'Volkswagen': ['Jetta', 'Passat', 'Golf', 'Tiguan', 'Atlas'],
+    'Subaru': ['Outback', 'Forester', 'Impreza', 'Crosstrek', 'Legacy'],
+    'Mazda': ['Mazda3', 'Mazda6', 'CX-5', 'CX-9', 'MX-5 Miata'],
+    'Kia': ['Optima', 'Soul', 'Sorento', 'Sportage', 'Forte'],
+    'Tesla': ['Model S', 'Model 3', 'Model X', 'Model Y'],
+  };
+
+  String? _selectedBrand;
+  String? _selectedCarModel;
+  String? _manualCarBrand;
+  String? _manualCarModel;
+  List<String> _availableModels = [];
+
   @override
   void dispose() {
     _problemController.dispose();
-    _carModelController.dispose();
     _contactNumberController.dispose();
     super.dispose();
   }
@@ -60,7 +82,8 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
       });
 
       final problemDescription = _problemController.text;
-      final carModel = _carModelController.text;
+      final carBrand = _selectedBrand ?? _manualCarBrand ?? '';
+      final carModel = _selectedCarModel ?? _manualCarModel ?? '';
       final contactNumber = _contactNumberController.text;
 
       String? imageUrl;
@@ -73,7 +96,8 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
 
       await FirebaseFirestore.instance.collection('problems').add({
         'problemDescription': problemDescription,
-        'carModel': carModel,
+        'carBrand': carBrand, // Save car brand
+        'carModel': carModel, // Save car model
         'contactNumber': contactNumber,
         'imagePath': imageUrl,
         'timestamp': FieldValue.serverTimestamp(),
@@ -81,7 +105,6 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
       });
 
       _problemController.clear();
-      _carModelController.clear();
       _contactNumberController.clear();
       setState(() {
         _selectedImage = null;
@@ -129,7 +152,8 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
           Center(
             child: Card(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
+                borderRadius: BorderRadius.circular(15),
+              ),
               elevation: 8,
               margin: EdgeInsets.all(20),
               child: Padding(
@@ -142,15 +166,17 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            'Describe Your Car Problem To Locate Suitable Mechanic',
-                            style: customTextStyle),
+                          'Describe Your Car Problem To Locate Suitable Mechanic',
+                          style: customTextStyle,
+                        ),
                         const SizedBox(height: 13),
                         TextFormField(
                           controller: _problemController,
                           decoration: InputDecoration(
                             labelText: 'Problem Description',
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12)),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             filled: true,
                             fillColor: Colors.blueGrey[50],
                           ),
@@ -163,29 +189,136 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
                           },
                         ),
                         const SizedBox(height: 13),
-                        TextFormField(
-                          controller: _carModelController,
+                        DropdownButtonFormField<String>(
                           decoration: InputDecoration(
-                            labelText: 'Car Model',
+                            labelText: 'Car Brand',
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12)),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             filled: true,
                             fillColor: Colors.blueGrey[50],
                           ),
+                          value: _selectedBrand,
+                          items: _carModelsByBrand.keys.map((brand) {
+                            return DropdownMenuItem<String>(
+                              value: brand,
+                              child: Text(brand),
+                            );
+                          }).toList()
+                            ..add(DropdownMenuItem<String>(
+                              value: 'Other',
+                              child: Text('Other'),
+                            )),
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedBrand = newValue;
+                              if (newValue != 'Other') {
+                                _availableModels = _carModelsByBrand[newValue]!;
+                                _selectedCarModel = null;
+                              } else {
+                                _availableModels = [];
+                              }
+                              _manualCarBrand = null; // Reset manual input
+                            });
+                          },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter the model of your car';
+                              return 'Please select your car brand';
                             }
                             return null;
                           },
                         ),
+                        if (_selectedBrand == 'Other') ...[
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Enter Car Brand',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              filled: true,
+                              fillColor: Colors.blueGrey[50],
+                            ),
+                            onChanged: (value) {
+                              _manualCarBrand = value;
+                            },
+                            validator: (value) {
+                              if (_selectedBrand == 'Other' &&
+                                  (value == null || value.isEmpty)) {
+                                return 'Please enter your car brand';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                        const SizedBox(height: 13),
+                        if (_selectedBrand != 'Other')
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: 'Car Model',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              filled: true,
+                              fillColor: Colors.blueGrey[50],
+                            ),
+                            value: _selectedCarModel,
+                            items: _availableModels.map((model) {
+                              return DropdownMenuItem<String>(
+                                value: model,
+                                child: Text(model),
+                              );
+                            }).toList()
+                              ..add(DropdownMenuItem<String>(
+                                value: 'Other',
+                                child: Text('Other'),
+                              )),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedCarModel = newValue;
+                                _manualCarModel = null; // Reset manual input
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please select your car model';
+                              }
+                              return null;
+                            },
+                          ),
+                        if (_selectedBrand == 'Other' ||
+                            _selectedCarModel == 'Other') ...[
+                          const SizedBox(height: 13),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Enter Car Model',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              filled: true,
+                              fillColor: Colors.blueGrey[50],
+                            ),
+                            onChanged: (value) {
+                              _manualCarModel = value;
+                            },
+                            validator: (value) {
+                              if ((_selectedBrand == 'Other' ||
+                                      _selectedCarModel == 'Other') &&
+                                  (value == null || value.isEmpty)) {
+                                return 'Please enter your car model';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
                         const SizedBox(height: 13),
                         TextFormField(
                           controller: _contactNumberController,
                           decoration: InputDecoration(
                             labelText: 'Contact Number',
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12)),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             filled: true,
                             fillColor: Colors.blueGrey[50],
                           ),
@@ -194,69 +327,60 @@ class _ProblemDescriptionFormState extends State<ProblemDescriptionFormPage> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your contact number';
                             }
+                            if (value.length != 10) {
+                              return 'Contact number must be 10 digits long';
+                            }
                             return null;
                           },
                         ),
-                        const SizedBox(height: 15),
-                        _selectedImage == null
-                            ? GestureDetector(
-                                onTap: _pickImage,
-                                child: Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.blueGrey, width: 2),
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: Colors.blueGrey[50],
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.image,
-                                          size: 50, color: Colors.blueGrey),
-                                      const SizedBox(height: 10),
-                                      Text('Upload Picture',
-                                          style: TextStyle(
-                                              color: Colors.blueGrey[800])),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : Column(
-                                children: [
-                                  ClipRRect(
+                        const SizedBox(height: 13),
+                        GestureDetector(
+                          onTap: _pickImage,
+                          child: Container(
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.blueGrey,
+                                width: 1,
+                              ),
+                            ),
+                            child: _selectedImage != null
+                                ? ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: Image.file(
                                       _selectedImage!,
-                                      height: 150,
-                                      width: double.infinity,
                                       fit: BoxFit.cover,
                                     ),
+                                  )
+                                : Center(
+                                    child: Text(
+                                      'Tap to pick an image',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey,
+                                      ),
+                                    ),
                                   ),
-                                  TextButton(
-                                    onPressed: _pickImage,
-                                    child: Text('Change Picture',
-                                        style: TextStyle(
-                                            color: Colors.blueGrey[800])),
-                                  ),
-                                ],
+                          ),
+                        ),
+                        const SizedBox(height: 13),
+                        if (_isLoading)
+                          Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        else
+                          ElevatedButton(
+                            onPressed: _submitForm,
+                            child: Text('Submit'),
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 24),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                        const SizedBox(height: 20),
-                        _isLoading
-                            ? Center(child: CircularProgressIndicator())
-                            : ElevatedButton(
-                                onPressed: _submitForm,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12)),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 15),
-                                ),
-                                child: Text('Submit',
-                                    style: TextStyle(fontSize: 16)),
-                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),

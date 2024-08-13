@@ -6,7 +6,6 @@ import "package:garage_finder/pages/payments.dart";
 import 'package:garage_finder/pages/common_car_problems.dart';
 import 'package:garage_finder/pages/map_pages.dart';
 import "package:garage_finder/pages/breakdown_assistance.dart";
-import "package:garage_finder/pages/recent_activity.dart";
 import "package:garage_finder/pages/support_and_feedback.dart";
 import "package:garage_finder/pages/about_us.dart";
 import "package:garage_finder/pages/contact_us.dart";
@@ -21,6 +20,25 @@ const Color secondaryColor = Colors.white;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('HomePage'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pushNamed(
+                context, 'garage_finder/lib/pages/rating_page.dart');
+          },
+          child: const Text('garage_finder/lib/pages/rating_page.dart'),
+        ),
+      ),
+    );
+    // TODO: implement ==
+    //return super == other;
+  }
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -100,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                     minHeight: 14,
                   ),
                   child: Text(
-                    '0', // Replace '0' with the actual count
+                    '-', //
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 8,
@@ -537,27 +555,172 @@ class QuickAccessButton extends StatelessWidget {
   }
 }
 
+class RecentActivityPage extends StatelessWidget {
+  static Route<dynamic> route() {
+    return MaterialPageRoute(builder: (context) => RecentActivityPage());
+  }
+
+  Future<List<QueryDocumentSnapshot>> _fetchActivities() async {
+    final problemsQuery = FirebaseFirestore.instance
+        .collection('problems')
+        .orderBy('timestamp', descending: true)
+        .get();
+
+    final breakdownQuery = FirebaseFirestore.instance
+        .collection('breakdown')
+        .orderBy('timestamp', descending: true)
+        .get();
+
+    final problemsSnapshot = await problemsQuery;
+    final breakdownSnapshot = await breakdownQuery;
+
+    final combinedDocs = <QueryDocumentSnapshot>[];
+    combinedDocs.addAll(problemsSnapshot.docs);
+    combinedDocs.addAll(breakdownSnapshot.docs);
+
+    // Sort by timestamp
+    combinedDocs.sort((a, b) {
+      final aTimestamp =
+          (a.data() as Map<String, dynamic>)['timestamp'] as Timestamp?;
+      final bTimestamp =
+          (b.data() as Map<String, dynamic>)['timestamp'] as Timestamp?;
+      return bTimestamp?.compareTo(aTimestamp ?? Timestamp.now()) ?? 1;
+    });
+
+    return combinedDocs;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text('Recent Activity'),
+        centerTitle: true,
+        elevation: 5,
+      ),
+      body: FutureBuilder<List<QueryDocumentSnapshot>>(
+        future: _fetchActivities(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            return Center(child: CircularProgressIndicator());
+          }
+
+          final recentActivities = snapshot.data!;
+
+          return ListView.builder(
+            itemCount: recentActivities.length,
+            itemBuilder: (context, index) {
+              final activity = recentActivities[index];
+              final data = activity.data() as Map<String, dynamic>;
+              final isBreakdown = activity.reference.parent.id == 'breakdown';
+
+              return Card(
+                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                elevation: 5,
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isBreakdown
+                            ? 'Requested a tow truck'
+                            : (data['problemDescription'] ?? 'No description'),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueGrey[800],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Car Brand: ${data['carBrand'] ?? 'No brand'}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.blueGrey[600],
+                        ),
+                      ),
+                      Text(
+                        'Car Model: ${data['carModel'] ?? 'No model'}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.blueGrey[600],
+                        ),
+                      ),
+                      if (isBreakdown)
+                        Text(
+                          'Car Size: ${data['carSize'] ?? 'No size'}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.blueGrey[600],
+                          ),
+                        ),
+                      SizedBox(height: 10),
+                      if (data['imagePath'] != null)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            data['imagePath'],
+                            height: 100,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.access_time, size: 16, color: Colors.grey),
+                          SizedBox(width: 5),
+                          Text(
+                            data['timestamp'] != null
+                                ? (data['timestamp'] as Timestamp)
+                                    .toDate()
+                                    .toString()
+                                : 'No timestamp',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
 class RecentActivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to RecentActivityPage when the card is tapped
         Navigator.push(
           context,
-          RecentActivityPage
-              .route(), // Use the named route to navigate to RecentActivityPage
+          RecentActivityPage.route(),
         );
       },
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 8,
+        shadowColor: Colors.black45,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.history, color: primaryColor, size: 30),
+              Icon(Icons.history, color: Colors.blue, size: 40),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -565,11 +728,12 @@ class RecentActivity extends StatelessWidget {
                   children: [
                     Text('Recent Activity',
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.black)),
                     const SizedBox(height: 5),
-                    // List of recent activities
+                    Text('Check your recent activities here.',
+                        style: TextStyle(fontSize: 16, color: Colors.black54)),
                   ],
                 ),
               ),
@@ -592,14 +756,15 @@ class Notifications extends StatelessWidget {
         );
       },
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 8,
+        shadowColor: Colors.black45,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.notifications, color: primaryColor, size: 30),
+              Icon(Icons.notifications, color: primaryColor, size: 40),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -607,11 +772,12 @@ class Notifications extends StatelessWidget {
                   children: [
                     Text('Notifications',
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.black)),
                     const SizedBox(height: 5),
-                    // List of notifications
+                    Text('Check your notifications here.',
+                        style: TextStyle(fontSize: 16, color: Colors.black54)),
                   ],
                 ),
               ),
@@ -628,22 +794,21 @@ class SupportAndFeedback extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to SupportAndFeedbackPage when the card is tapped
         Navigator.push(
           context,
-          SupportAndFeedbackPage
-              .route(), // Use the named route to navigate to SupportAndFeedbackPage
+          SupportAndFeedbackPage.route(),
         );
       },
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 8,
+        shadowColor: Colors.black45,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.support_agent, color: primaryColor, size: 30),
+              Icon(Icons.support_agent, color: primaryColor, size: 40),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -651,11 +816,12 @@ class SupportAndFeedback extends StatelessWidget {
                   children: [
                     Text('Support and Feedback',
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.black)),
                     const SizedBox(height: 5),
-                    // Support and feedback options
+                    Text('Get support and provide feedback.',
+                        style: TextStyle(fontSize: 16, color: Colors.black54)),
                   ],
                 ),
               ),
@@ -672,21 +838,21 @@ class UserAccountAndWallet extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to PaymentPage when the card is tapped
         Navigator.push(
           context,
-          PaymentPage.route(), // Use the named route to navigate to PaymentPage
+          PaymentPage.route(),
         );
       },
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 8,
+        shadowColor: Colors.black45,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.account_balance_wallet, color: primaryColor, size: 30),
+              Icon(Icons.account_balance_wallet, color: primaryColor, size: 40),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -694,11 +860,12 @@ class UserAccountAndWallet extends StatelessWidget {
                   children: [
                     Text('Payments',
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.black)),
                     const SizedBox(height: 5),
-                    // User account and wallet details
+                    Text('Manage your payments here.',
+                        style: TextStyle(fontSize: 16, color: Colors.black54)),
                   ],
                 ),
               ),
@@ -709,3 +876,4 @@ class UserAccountAndWallet extends StatelessWidget {
     );
   }
 }
+//class home_page extends StatelessWidget
