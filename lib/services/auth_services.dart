@@ -1,23 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthService {
-  // Google sign in
-  Future<UserCredential?> signInWithGoogle() async {
-    // Begin interactive sign in process
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-    final GoogleSignInAccount? gUser = await googleSignIn.signIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-    // Obtain auth details from the request
-    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
-
-    // Create a new credential for the user
-    final credential = GoogleAuthProvider.credential(
-      accessToken: gAuth.accessToken,
-      idToken: gAuth.idToken,
-    );
-
-    // Finally lets sign in
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+  Future<void> setUserRole(String uid, String role) async {
+    await _firestore.collection('users').doc(uid).set({
+      'role': role,
+      // Add other user details if necessary
+    }, SetOptions(merge: true)); // Merge to avoid overwriting existing data
   }
 }
